@@ -1,0 +1,37 @@
+name: Github CI
+
+on:
+  push:
+    tags:
+      - v**
+
+jobs:
+  run-migration:
+    runs-on: ubuntu-latest
+    if: github.ref_type == 'tag' && contains(github.ref_name, 'migration')
+    steps:
+      - name: Running only Migration and Seed
+        uses: appleboy/ssh-action@master
+        with: 
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /var/www/web-pln-api/
+            sudo git pull origin master
+            composer run-script startup-project
+  run-build:
+    runs-on: ubuntu-latest
+    if: github.ref_type == 'tag' && contains(github.ref_name, 'build')
+    steps:
+      - name: Running Build without Migration and Seed
+        uses: appleboy/ssh-action@master
+        with: 
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd /var/www/web-pln-api/
+            sudo git pull origin master
