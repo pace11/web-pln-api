@@ -6,6 +6,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\PostsController;
 use App\Http\Controllers\API\ServicesController;
 use App\Http\Controllers\API\CategoriesController;
+use App\Http\Controllers\API\GrafikController;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,6 +41,9 @@ Route::prefix('web')->group(function () {
 
 Route::group(['middleware' => 'auth:api'], function() {
 
+    // Grafik
+    Route::get('grafik', [GrafikController::class, 'index']);
+
     // logout / detail user
     Route::post('logout', [UserController::class, 'logout']);
     Route::get('user/me', [UserController::class, 'me']);
@@ -48,7 +52,9 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     // Posts
     Route::get('posts', [PostsController::class, 'index']);
+    Route::get('posts/archived', [PostsController::class, 'indexArchived']);
     Route::post('post', [PostsController::class, 'create']);
+    Route::post('post/restore/{id}', [PostsController::class, 'restoreById']);
     Route::get('post/{id}', [PostsController::class, 'showById']);
     Route::get('post/slug/{id}', [PostsController::class, 'showBySlug']);
     Route::get('posts/relates', [PostsController::class, 'showRelates']);
@@ -57,7 +63,9 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     // Categories
     Route::get('categories', [CategoriesController::class, 'index']);
+    Route::get('categories/archived', [CategoriesController::class, 'indexArchived']);
     Route::post('category', [CategoriesController::class, 'create']);
+    Route::post('category/restore/{id}', [CategoriesController::class, 'restoreById']);
     Route::get('category/{id}', [CategoriesController::class, 'showById']);
     Route::patch('category/{id}', [CategoriesController::class, 'updateById']);
     Route::delete('category/{id}', [CategoriesController::class, 'deleteById']);

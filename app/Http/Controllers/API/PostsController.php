@@ -38,6 +38,17 @@ class PostsController extends ResponseController
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexArchived(Request $request) {
+        $posts = Posts::with(['categories', 'user'])->orderBy('deleted_at', 'desc')->onlyTrashed()->paginate(10);
+
+        return $this->sendResponsePagination($posts, "Fetch posts archived success");
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -179,13 +190,13 @@ class PostsController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function restoreById($id) {
-        $pegawai = Pegawai::whereId($id)->withTrashed()->restore();
+        $post = Posts::whereId($id)->withTrashed()->restore();
 
-        if (!$pegawai) {
+        if (!$post) {
             return $this->sendError('Not Found', false, 404);
         }
         
-        return $this->sendResponse(null, 'Restore pegawai success');
+        return $this->sendResponse(null, 'Restore post success');
     }
 
 }

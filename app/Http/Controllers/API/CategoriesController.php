@@ -21,6 +21,17 @@ class CategoriesController extends ResponseController
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexArchived(Request $request) {
+        $categories = Categories::onlyTrashed()->paginate(10);
+
+        return $this->sendResponsePagination($categories, "Fetch categories archived success");
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
@@ -90,13 +101,13 @@ class CategoriesController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function restoreById($id) {
-        $jabatan = Jabatan::whereId($id)->withTrashed()->restore();
+        $categories = Categories::whereId($id)->withTrashed()->restore();
 
-        if (!$jabatan) {
+        if (!$categories) {
             return $this->sendError('Not Found', false, 404);
         }
         
-        return $this->sendResponse(null, 'Restore jabatan success');
+        return $this->sendResponse(null, 'Restore category success');
     }
 
     /**
