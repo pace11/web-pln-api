@@ -35,4 +35,8 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function unit() {
+        return $this->belongsTo(Unit::class, 'unit_id', 'id');
+    }
 }

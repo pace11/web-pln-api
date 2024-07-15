@@ -7,6 +7,8 @@ use App\Http\Controllers\API\PostsController;
 use App\Http\Controllers\API\ServicesController;
 use App\Http\Controllers\API\CategoriesController;
 use App\Http\Controllers\API\GrafikController;
+use App\Http\Controllers\API\NotificationsController;
+use App\Http\Controllers\API\UnitController;
 
 /*
 |--------------------------------------------------------------------------
@@ -47,7 +49,9 @@ Route::group(['middleware' => 'auth:api'], function() {
     // logout / detail user
     Route::post('logout', [UserController::class, 'logout']);
     Route::get('user/me', [UserController::class, 'me']);
+    Route::get('users', [UserController::class, 'index']);
     Route::get('user/{id}', [UserController::class, 'showById']);
+    Route::patch('user/{id}',  [UserController::class, 'updateById']);
     Route::post('update-password', [UserController::class, 'updatePassword']);
 
     // Posts
@@ -59,6 +63,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('post/slug/{id}', [PostsController::class, 'showBySlug']);
     Route::get('posts/relates', [PostsController::class, 'showRelates']);
     Route::patch('post/{id}', [PostsController::class, 'updateById']);
+    Route::patch('post/status/{id}', [PostsController::class, 'updateStatusById']);
     Route::delete('post/{id}', [PostsController::class, 'deleteById']);
 
     // Categories
@@ -70,6 +75,20 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::patch('category/{id}', [CategoriesController::class, 'updateById']);
     Route::delete('category/{id}', [CategoriesController::class, 'deleteById']);
 
+    // Unit
+    Route::get('units', [UnitController::class, 'index']);
+    Route::get('units/option', [UnitController::class, 'indexOption']);
+    Route::get('units/archived', [UnitController::class, 'indexArchived']);
+    Route::post('unit', [UnitController::class, 'create']);
+    Route::post('unit/restore/{id}', [UnitController::class, 'restoreById']);
+    Route::get('unit/{id}', [UnitController::class, 'showById']);
+    Route::patch('unit/{id}', [UnitController::class, 'updateById']);
+    Route::delete('unit/{id}', [UnitController::class, 'deleteById']);
+
+    // Notifications
+    Route::get('notifications', [NotificationsController::class, 'index']);
+
+    // Service Upload
     Route::post('upload-image', [ServicesController::class, 'uploadImage']);
 
 });

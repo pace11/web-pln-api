@@ -14,14 +14,19 @@ return new class extends Migration
     public function up()
     {
         Schema::create('users', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['admin', 'guest'])->default('guest');
+            $table->enum('type', ['superadmin', 'admin', 'creator', 'checker', 'approver'])->default('admin');
             $table->rememberToken();
+            $table->integer('unit_id')->unsigned()->nullable();
             $table->softDeletes($column = 'deleted_at', $precision = 0);
             $table->timestamps();
+        });
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreign('unit_id')->references('id')->on('unit');
         });
     }
 

@@ -14,15 +14,26 @@ return new class extends Migration
     public function up()
     {
         Schema::create('posts', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->bigIncrements('id');
             $table->text('slug')->nullable();
             $table->text('title')->nullable();
             $table->text('description')->nullable();
             $table->text('thumbnail')->nullable();
             $table->boolean('posted')->nullable();
             $table->boolean('banner')->nullable();
-            $table->unsignedInteger('categories_id');
-            $table->unsignedBigInteger('users_id');
+            $table->enum('status', ['pending', 'checked', 'approved', 'rejected'])->default('pending');
+            $table->timestamp('checked_by_date', $precision = 0)->nullable();
+            $table->text('checked_by_email')->nullable();
+            $table->text('checked_by_remarks')->nullable();
+            $table->timestamp('approved_by_date', $precision = 0)->nullable();
+            $table->text('approved_by_email')->nullable();
+            $table->text('approved_by_remarks')->nullable();
+            $table->timestamp('rejected_by_date', $precision = 0)->nullable();
+            $table->text('rejected_by_email')->nullable();
+            $table->text('rejected_by_remarks')->nullable();
+            $table->integer('categories_id')->unsigned()->nullable();
+            $table->integer('unit_id')->unsigned()->nullable();
+            $table->bigInteger('users_id')->unsigned()->nullable();
             $table->softDeletes($column = 'deleted_at', $precision = 0);
             $table->timestamps();
         });
@@ -30,6 +41,7 @@ return new class extends Migration
         Schema::table('posts', function (Blueprint $table) {
             $table->foreign('categories_id')->references('id')->on('categories');
             $table->foreign('users_id')->references('id')->on('users');
+            $table->foreign('unit_id')->references('id')->on('unit');
         });
     }
 

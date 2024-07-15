@@ -6,11 +6,10 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\ResponseController as ResponseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use App\Models\Posts;
 use App\Models\Notifications;
 use Validator;
 
-class PostsController extends ResponseController
+class NotificationsController extends ResponseController
 {
     /**
      * Display a listing of the resource.
@@ -19,31 +18,19 @@ class PostsController extends ResponseController
      */
     public function index(Request $request) {
         $user = Auth::guard('api')->user();
-        $posted = $request->query('posted');
-        $banner = $request->query('banner');
-        $slug = $request->query('slug');
 
-        if ($user->type == 'superadmin') {
-            $filter = [];
-        } else {
+        if ($user->type != 'superadmin') {
             $filter = [['unit_id', $user->unit_id]];
-        }
-
-        if (isset($posted) || isset($banner) || isset($slug)) {
-            $posts = Posts::with(['categories', 'user', 'unit'])->orderBy('updated_at', 'desc')
-                    ->whereHas('categories', function($q) use($slug) {
-                        $q->where('slug', $slug ? '=' : '!=', $slug ? $slug : '');
-                    })
-                    ->where([
-                        ['posted', '=', $posted === 'true' ? 1 : 0],
-                        ['banner', '=', $banner === 'true' ? 1 : 0]
-                    ])
-                    ->where($filter)->paginate(10);
         } else {
-            $posts = Posts::with(['categories', 'user', 'unit'])->where($filter)->orderBy('updated_at', 'desc')->paginate(10);
+            $filter = [];
         }
 
-        return $this->sendResponsePagination($posts, "Fetch posts success");
+        $notifications = Notifications::with(['user'])
+                        ->whereHas('user', function($q) use($filter) {
+                            $q->where($filter);
+                        })->orderBy('updated_at', 'desc')->get();
+
+        return $this->sendResponse($notifications, "Fetch notifications success");
     }
 
     /**
@@ -148,6 +135,8 @@ class PostsController extends ResponseController
             Notifications::create([
                 'users_id' => $user->id,
                 'posts_id' => $detail_posts->id,
+                'users_email' => $user->email,
+                'unit_id' => $user->unit_id,
             ]);
         }
 
@@ -162,7 +151,6 @@ class PostsController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function updateById(Request $request, $id) {
-        $user = Auth::guard('api')->user();
         $validator = Validator::make($request->all(), [
             'title' => 'required',
             'description' => 'required',
@@ -179,15 +167,10 @@ class PostsController extends ResponseController
 
         $input = $request->all();
         $input['slug'] = Str::slug($input['title']);
+        $input['status'] = 
 
         Posts::whereId($id)->update($input);
         $update = Posts::where('id', $id)->first();
-
-        Notifications::create([
-            'users_id' => $user->id,
-            'posts_id' => $update->id,
-            'status' => $input['status'],
-        ]);
 
         return $this->sendResponse($update, "Update posts success");
     }
@@ -222,59 +205,6 @@ class PostsController extends ResponseController
         }
         
         return $this->sendResponse(null, 'Restore post success');
-    }
-
-    /**
-     * Modified the specific resource.
-     *
-     * @param  request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function updateStatusById(Request $request, $id) {
-        $user = Auth::guard('api')->user();
-        $validator = Validator::make($request->all(), [
-            'status' => 'required',
-            'remarks' => '',
-            'posted' => '',
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError('Error validation', $validator->errors(), 400);       
-        }
-
-        $payload = [
-            'checked' => [
-                'checked_by_date' => date('Y-m-d h:i:s'),
-                'checked_by_email' => $user->email,
-                'checked_by_remarks' => $request->all()['remarks']
-            ],
-            'approved' => [
-                'approved_by_date' => date('Y-m-d h:i:s'),
-                'approved_by_email' => $user->email,
-                'approved_by_remarks' => $request->all()['remarks'],
-                'posted' => $request->all()['posted']
-            ],
-            'rejected' => [
-                'rejected_by_date' => date('Y-m-d h:i:s'),
-                'rejected_by_email' => $user->email,
-                'rejected_by_remarks' => $request->all()['remarks']
-            ],
-        ];
-
-        $input = $payload[$request->all()['status']];
-        $input['status'] = $request->all()['status'];
-
-        Posts::whereId($id)->update($input);
-        $update = Posts::where('id', $id)->first();
-
-        Notifications::create([
-            'users_id' => $update->users_id,
-            'posts_id' => $update->id,
-            'status' => $request->all()['status'],
-        ]);
-
-        return $this->sendResponse($update, "Update posts success");
     }
 
 }

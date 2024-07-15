@@ -6,15 +6,26 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\ResponseController as ResponseController;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Unit;
+use App\Models\Role;
 use Validator;
 
 class UserController extends ResponseController
 {
+
+    public function index() {
+        $user = User::with(['unit'])->where('type','!=','superadmin')->paginate(10);
+
+        return $this->sendResponsePagination($user, 'Fetch users success');
+    }
+
     public function register(Request $request) {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required',
+            'type' => 'required',
+            'unit_id' => 'required',
         ]);
         $input = $request->all();
 
@@ -32,6 +43,39 @@ class UserController extends ResponseController
         $user = User::create($input);
 
         return $this->sendResponse($found_user, "Register user success");
+    }
+
+    public function updateById(Request $request, $id) {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'email_old' => '',
+            'email' => 'required|email',
+            'password' => '',
+            'type' => 'required',
+            'unit_id' => 'required',
+        ]);
+        $input = $request->all();
+
+        if($validator->fails()){
+            return $this->sendError('Error validation', $validator->errors(), 400);       
+        }
+
+        if ($input['email_old'] != $input['email']) {
+            $found_user = User::where('email', $input['email'])->first();
+            
+            if ($found_user) {
+                return $this->sendError('The email address you specified is already in use', false, 409);
+            }
+        }
+
+        if ($input['password']) {
+            $input['password'] = bcrypt($input['password']);
+        }
+
+        User::whereId($id)->create($input);
+        $update = User::whereId($id)->first();
+
+        return $this->sendResponse($update, "Update user success");
     }
 
     public function login(Request $request) {
@@ -95,7 +139,9 @@ class UserController extends ResponseController
 
     public function me() {
         $user = Auth::guard('api')->user();
-        return $this->sendResponse($user, 'Get user success');
+        $profile = $user;
+        $profile['unit_id'] = Unit::whereId($user->unit_id)->first();
+        return $this->sendResponse($profile, 'Get user success');
     }
 
     public function showById($id) {
