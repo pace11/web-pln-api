@@ -7,6 +7,7 @@ use App\Http\Controllers\API\ResponseController as ResponseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Posts;
+use App\Models\PostsWeb;
 use App\Models\Notifications;
 use Validator;
 
@@ -51,6 +52,32 @@ class PostsController extends ResponseController
      *
      * @return \Illuminate\Http\Response
      */
+    public function indexWeb(Request $request) {
+        $posted = $request->query('posted');
+        $banner = $request->query('banner');
+        $slug = $request->query('slug');
+
+        if (isset($posted) || isset($banner) || isset($slug)) {
+            $posts = PostsWeb::with(['categories', 'user', 'unit'])->orderBy('updated_at', 'desc')
+                    ->whereHas('categories', function($q) use($slug) {
+                        $q->where('slug', $slug ? '=' : '!=', $slug ? $slug : '');
+                    })
+                    ->where([
+                        ['posted', '=', $posted === 'true' ? 1 : 0],
+                        ['banner', '=', $banner === 'true' ? 1 : 0]
+                    ])->paginate(10);
+        } else {
+            $posts = PostsWeb::with(['categories', 'user', 'unit'])->orderBy('updated_at', 'desc')->paginate(10);
+        }
+
+        return $this->sendResponsePagination($posts, "Fetch posts success");
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function indexArchived(Request $request) {
         $posts = Posts::with(['categories', 'user'])->orderBy('deleted_at', 'desc')->onlyTrashed()->paginate(10);
 
@@ -80,7 +107,7 @@ class PostsController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function showBySlug($id) {
-        $posts = Posts::with(['categories', 'user'])->where('slug', $id)->first();
+        $posts = PostsWeb::with(['categories', 'user'])->where('slug', $id)->first();
 
         if (!$posts) {
             return $this->sendError('Not Found', false, 404);
@@ -100,7 +127,7 @@ class PostsController extends ResponseController
         $tag = $request->query('tag') ?? '';
         $limit = $request->query('limit') ?? 3;
 
-        $posts = Posts::with(['categories', 'user'])
+        $posts = PostsWeb::with(['categories', 'user'])
                 ->whereHas('categories', function($q) use($tag) {
                     $q->where('slug', '=', $tag);
                 })
@@ -169,7 +196,6 @@ class PostsController extends ResponseController
             'thumbnail' => '',
             'posted' => '',
             'banner' => '',
-            'status' => 'required',
             'categories_id' => 'required',
         ]);
 
@@ -182,12 +208,6 @@ class PostsController extends ResponseController
 
         Posts::whereId($id)->update($input);
         $update = Posts::where('id', $id)->first();
-
-        Notifications::create([
-            'users_id' => $user->id,
-            'posts_id' => $update->id,
-            'status' => $input['status'],
-        ]);
 
         return $this->sendResponse($update, "Update posts success");
     }

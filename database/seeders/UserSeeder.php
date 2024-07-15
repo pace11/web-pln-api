@@ -60,6 +60,42 @@ class UserSeeder extends Seeder
                 'created_at' => date('Y-m-d h:i:s'),
                 'updated_at' => date('Y-m-d h:i:s'),
             ],
+            [
+                'name' => 'creator upt medan',
+                'email' => 'creatormedan@pln.com',
+                'password' => bcrypt('12345'),
+                'type' => 'creator',
+                'unit_id' => 2,
+                'created_at' => date('Y-m-d h:i:s'),
+                'updated_at' => date('Y-m-d h:i:s'),
+            ],
+            [
+                'name' => 'checker upt medan',
+                'email' => 'checkermedan@pln.com',
+                'password' => bcrypt('12345'),
+                'type' => 'checker',
+                'unit_id' => 2,
+                'created_at' => date('Y-m-d h:i:s'),
+                'updated_at' => date('Y-m-d h:i:s'),
+            ],
+            [
+                'name' => 'approver upt medan',
+                'email' => 'approvermedan@pln.com',
+                'password' => bcrypt('12345'),
+                'type' => 'approver',
+                'unit_id' => 2,
+                'created_at' => date('Y-m-d h:i:s'),
+                'updated_at' => date('Y-m-d h:i:s'),
+            ],
+            [
+                'name' => 'admin upt medan',
+                'email' => 'adminmedan@pln.com',
+                'password' => bcrypt('12345'),
+                'type' => 'admin',
+                'unit_id' => 2,
+                'created_at' => date('Y-m-d h:i:s'),
+                'updated_at' => date('Y-m-d h:i:s'),
+            ],
         ]);
     }
 }

@@ -30,7 +30,7 @@ Route::post('forgot-password',  [UserController::class, 'forgotPassword']);
 Route::prefix('web')->group(function () {
 
     // Posts
-    Route::get('posts', [PostsController::class, 'index']);
+    Route::get('posts', [PostsController::class, 'indexWeb']);
     Route::get('post/{id}', [PostsController::class, 'showById']);
     Route::get('post/slug/{id}', [PostsController::class, 'showBySlug']);
     Route::get('posts/relates', [PostsController::class, 'showRelates']);
@@ -52,6 +52,8 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('users', [UserController::class, 'index']);
     Route::get('user/{id}', [UserController::class, 'showById']);
     Route::patch('user/{id}',  [UserController::class, 'updateById']);
+    Route::delete('user/{id}', [UserController::class, 'deleteById']);
+    Route::post('user/restore/{id}', [UserController::class, 'restoreById']);
     Route::post('update-password', [UserController::class, 'updatePassword']);
 
     // Posts

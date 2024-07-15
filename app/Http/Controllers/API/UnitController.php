@@ -28,7 +28,19 @@ class UnitController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function indexOption() {
-        $unit = Unit::orderBy('updated_at', 'desc')->get();
+        $user = Auth::guard('api')->user();
+
+        if ($user->type == 'superadmin') {
+            $filter = [];
+        }
+
+        if ($user->type == 'admin') {
+            $filter = [
+                ['id', '=', $user->unit_id],
+            ];
+        }
+
+        $unit = Unit::where($filter)->orderBy('updated_at', 'desc')->get();
 
         return $this->sendResponse($unit, "Fetch unit success");
     }

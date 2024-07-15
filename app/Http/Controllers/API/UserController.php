@@ -14,7 +14,23 @@ class UserController extends ResponseController
 {
 
     public function index() {
-        $user = User::with(['unit'])->where('type','!=','superadmin')->paginate(10);
+        $user = Auth::guard('api')->user();
+
+        if ($user->type == 'superadmin') {
+            $filter = [
+                ['type', '!=', 'superadmin']
+            ];
+        }
+
+        if ($user->type == 'admin') {
+            $filter = [
+                ['type', '!=', 'superadmin'],
+                ['type', '!=', 'admin'],
+                ['unit_id', '=', $user->unit_id]
+            ];
+        }
+
+        $user = User::with(['unit'])->where($filter)->orderBy('updated_at', 'desc')->paginate(10);
 
         return $this->sendResponsePagination($user, 'Fetch users success');
     }
@@ -42,15 +58,12 @@ class UserController extends ResponseController
         $input['password'] = bcrypt($input['password']);
         $user = User::create($input);
 
-        return $this->sendResponse($found_user, "Register user success");
+        return $this->sendResponse($user, "Register user success");
     }
 
     public function updateById(Request $request, $id) {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'email_old' => '',
-            'email' => 'required|email',
-            'password' => '',
             'type' => 'required',
             'unit_id' => 'required',
         ]);
@@ -60,19 +73,21 @@ class UserController extends ResponseController
             return $this->sendError('Error validation', $validator->errors(), 400);       
         }
 
-        if ($input['email_old'] != $input['email']) {
-            $found_user = User::where('email', $input['email'])->first();
+        if (array_key_exists('email', $request->all())) {
+            $found_user = User::where('email', $request->all()['email'])->first();
             
             if ($found_user) {
                 return $this->sendError('The email address you specified is already in use', false, 409);
             }
+
+            $input['email'] = $request->all()['email'];
         }
 
-        if ($input['password']) {
-            $input['password'] = bcrypt($input['password']);
+        if (array_key_exists('password', $request->all())) {
+            $input['password'] = bcrypt($request->all()['password']);
         }
 
-        User::whereId($id)->create($input);
+        User::whereId($id)->update($input);
         $update = User::whereId($id)->first();
 
         return $this->sendResponse($update, "Update user success");
@@ -147,5 +162,25 @@ class UserController extends ResponseController
     public function showById($id) {
         $user = User::whereId($id)->first();
         return $this->sendResponse($user, 'Get user profile success');
+    }
+
+    public function deleteById($id) {
+        $user = User::whereId($id)->delete();
+
+        if (!$user) {
+            return $this->sendError('Not Found', false, 404);
+        }
+        
+        return $this->sendResponse(null, 'Delete user success');
+    }
+
+    public function restoreById($id) {
+        $user = User::whereId($id)->withTrashed()->restore();
+
+        if (!$user) {
+            return $this->sendError('Not Found', false, 404);
+        }
+        
+        return $this->sendResponse(null, 'Restore user success');
     }
 }

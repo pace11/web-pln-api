@@ -28,7 +28,7 @@ class CategoriesSeeder extends Seeder
                 'updated_at' => date('Y-m-d h:i:s'),
             ],
             [
-                'slug' => 'siaran-pers',
+                'slug' => 'kegiatan',
                 'title' => 'Kegiatan',
                 'created_at' => date('Y-m-d h:i:s'),
                 'updated_at' => date('Y-m-d h:i:s'),

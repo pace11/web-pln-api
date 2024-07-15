@@ -5,12 +5,13 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -21,9 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'dob',
-        'phone',
-        'hobby',
+        'type',
+        'unit_id',
     ];
 
     /**
@@ -35,6 +35,14 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    protected $guard = [
+        'created_at', 'updated_at'
+    ];
+    protected $dates = [
+        'deleted_at'
+    ];
+
+    public $timestamps = true;
 
     public function unit() {
         return $this->belongsTo(Unit::class, 'unit_id', 'id');
