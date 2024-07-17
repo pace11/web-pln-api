@@ -9,6 +9,7 @@ use App\Http\Controllers\API\CategoriesController;
 use App\Http\Controllers\API\GrafikController;
 use App\Http\Controllers\API\NotificationsController;
 use App\Http\Controllers\API\UnitController;
+use App\Http\Controllers\API\MediaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -67,6 +68,16 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::patch('post/{id}', [PostsController::class, 'updateById']);
     Route::patch('post/status/{id}', [PostsController::class, 'updateStatusById']);
     Route::delete('post/{id}', [PostsController::class, 'deleteById']);
+
+    // Media
+    Route::get('media', [PostsController::class, 'index']);
+    Route::get('media/archived', [PostsController::class, 'indexArchived']);
+    Route::post('media', [PostsController::class, 'create']);
+    Route::post('media/restore/{id}', [PostsController::class, 'restoreById']);
+    Route::get('media/{id}', [PostsController::class, 'showById']);
+    Route::patch('media/{id}', [PostsController::class, 'updateById']);
+    Route::patch('media/status/{id}', [PostsController::class, 'updateStatusById']);
+    Route::delete('media/{id}', [PostsController::class, 'deleteById']);
 
     // Categories
     Route::get('categories', [CategoriesController::class, 'index']);

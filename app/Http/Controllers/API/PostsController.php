@@ -263,22 +263,43 @@ class PostsController extends ResponseController
             return $this->sendError('Error validation', $validator->errors(), 400);       
         }
 
+        $placement = [
+            'main_office' => '(Kantor Induk)',
+            'executor_unit' => '(Unit Pelaksana)',
+        ];
+
         $payload = [
             'checked' => [
                 'checked_by_date' => date('Y-m-d h:i:s'),
-                'checked_by_email' => $user->email,
+                'checked_by_email' => $user->email." ".$placement[$user->placement],
                 'checked_by_remarks' => $request->all()['remarks']
+            ],
+            'final_checked' => [
+                'final_checked_by_date' => date('Y-m-d h:i:s'),
+                'final_checked_by_email' => $user->email." ".$placement[$user->placement],
+                'final_checked_by_remarks' => $request->all()['remarks']
             ],
             'approved' => [
                 'approved_by_date' => date('Y-m-d h:i:s'),
-                'approved_by_email' => $user->email,
+                'approved_by_email' => $user->email." ".$placement[$user->placement],
                 'approved_by_remarks' => $request->all()['remarks'],
+                'posted' => $request->all()['posted']
+            ],
+            'final_approved' => [
+                'final_approved_by_date' => date('Y-m-d h:i:s'),
+                'final_approved_by_email' => $user->email." ".$placement[$user->placement],
+                'final_approved_by_remarks' => $request->all()['remarks'],
                 'posted' => $request->all()['posted']
             ],
             'rejected' => [
                 'rejected_by_date' => date('Y-m-d h:i:s'),
-                'rejected_by_email' => $user->email,
+                'rejected_by_email' => $user->email." ".$placement[$user->placement],
                 'rejected_by_remarks' => $request->all()['remarks']
+            ],
+            'final_rejected' => [
+                'final_rejected_by_date' => date('Y-m-d h:i:s'),
+                'final_rejected_by_email' => $user->email." ".$placement[$user->placement],
+                'final_rejected_by_remarks' => $request->all()['remarks']
             ],
         ];
 

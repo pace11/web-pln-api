@@ -18,7 +18,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique()->nullable();
             $table->string('password')->nullable();
-            $table->enum('type', ['superadmin', 'admin', 'creator', 'checker', 'approver'])->default('admin');
+            $table->enum('placement', ['main_office', 'executor_unit'])->nullable();
+            $table->enum('type', ['superadmin', 'creator', 'checker', 'approver'])->nullable();
             $table->rememberToken();
             $table->integer('unit_id')->unsigned()->nullable();
             $table->softDeletes($column = 'deleted_at', $precision = 0);
