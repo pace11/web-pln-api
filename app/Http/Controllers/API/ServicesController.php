@@ -12,7 +12,7 @@ class ServicesController extends ResponseController
 
     public function uploadImage(Request $request) {
         $validator = Validator::make($request->all(), [
-            'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:500',
+            'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2000',
         ]);
 
         if($validator->fails()){

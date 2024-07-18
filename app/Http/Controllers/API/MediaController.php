@@ -78,6 +78,8 @@ class MediaController extends ResponseController
         $input = $request->all();
         $input['users_id'] = $user->id;
         $input['unit_id'] = $user->unit_id;
+        $input['created_at'] = date('Y-m-d h:i:s');
+        $input['updated_at'] = date('Y-m-d h:i:s');
         $media = Media::create($input);
 
         return $this->sendResponse($media, "Submit media success", 201);
@@ -103,6 +105,7 @@ class MediaController extends ResponseController
         }
 
         $input = $request->all();
+        $input['updated_at'] = date('Y-m-d h:i:s');
         Media::whereId($id)->update($input);
         $update = Media::where('id', $id)->first();
 
@@ -180,13 +183,11 @@ class MediaController extends ResponseController
                 'approved_by_date' => date('Y-m-d h:i:s'),
                 'approved_by_email' => $user->email." ".$placement[$user->placement],
                 'approved_by_remarks' => $request->all()['remarks'],
-                'posted' => $request->all()['posted']
             ],
             'final_approved' => [
                 'final_approved_by_date' => date('Y-m-d h:i:s'),
                 'final_approved_by_email' => $user->email." ".$placement[$user->placement],
                 'final_approved_by_remarks' => $request->all()['remarks'],
-                'posted' => $request->all()['posted']
             ],
             'rejected' => [
                 'rejected_by_date' => date('Y-m-d h:i:s'),
@@ -201,6 +202,7 @@ class MediaController extends ResponseController
         ];
 
         $input = $payload[$request->all()['status']];
+        $input['updated_at'] = date('Y-m-d h:i:s');
         $input['status'] = $request->all()['status'];
 
         Media::whereId($id)->update($input);

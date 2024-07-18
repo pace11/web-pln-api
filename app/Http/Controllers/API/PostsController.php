@@ -168,6 +168,8 @@ class PostsController extends ResponseController
         $input['slug'] = Str::slug($input['title']);
         $input['users_id'] = $user->id;
         $input['unit_id'] = $user->unit_id;
+        $input['created_at'] = date('Y-m-d h:i:s');
+        $input['updated_at'] = date('Y-m-d h:i:s');
         $posts = Posts::create($input);
         $detail_posts = Posts::where('id', $posts->id)->first();
         
@@ -175,6 +177,8 @@ class PostsController extends ResponseController
             Notifications::create([
                 'users_id' => $user->id,
                 'posts_id' => $detail_posts->id,
+                'created_at' => date('Y-m-d h:i:s'),
+                'updated_at' => date('Y-m-d h:i:s'),
             ]);
         }
 
@@ -205,6 +209,7 @@ class PostsController extends ResponseController
 
         $input = $request->all();
         $input['slug'] = Str::slug($input['title']);
+        $input['updated_at'] = date('Y-m-d h:i:s');
 
         Posts::whereId($id)->update($input);
         $update = Posts::where('id', $id)->first();
@@ -313,6 +318,7 @@ class PostsController extends ResponseController
             'users_id' => $update->users_id,
             'posts_id' => $update->id,
             'status' => $request->all()['status'],
+            'updated_at' => date('Y-m-d h:i:s')
         ]);
 
         return $this->sendResponse($update, "Update posts success");

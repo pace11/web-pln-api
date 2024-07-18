@@ -56,6 +56,8 @@ class UserController extends ResponseController
         }
 
         $input['password'] = bcrypt($input['password']);
+        $input['created_at'] = date('Y-m-d h:i:s');
+        $input['updated_at'] = date('Y-m-d h:i:s');
         $user = User::create($input);
 
         return $this->sendResponse($user, "Register user success");
@@ -87,6 +89,7 @@ class UserController extends ResponseController
             $input['password'] = bcrypt($request->all()['password']);
         }
 
+        $input['updated_at'] = date('Y-m-d h:i:s');
         User::whereId($id)->update($input);
         $update = User::whereId($id)->first();
 

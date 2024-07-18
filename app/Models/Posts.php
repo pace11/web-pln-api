@@ -50,12 +50,8 @@ class Posts extends Model
     protected $appends = [
         'is_own_post',
         'is_superadmin',
-        'is_creator',
-        'is_final_creator',
         'is_checker',
-        'is_final_checker',
         'is_approver',
-        'is_final_approver'
     ];
     protected $dates = [
         'deleted_at'
@@ -91,39 +87,39 @@ class Posts extends Model
         return $is_superadmin;
     }
 
-    public function getIsCreatorAttribute() {
-        $user = Auth::guard('api')->user();
-        $is_creator = $user->placement == 'executor_unit' && $user->type == 'creator' ?? false;
-        return $is_creator;
-    }
-
-    public function getIsFinalCreatorAttribute() {
-        $user = Auth::guard('api')->user();
-        $is_creator = $user->placement == 'main_office' && $user->type == 'creator' ?? false;
-        return $is_creator;
-    }
-
     public function getIsCheckerAttribute() {
         $user = Auth::guard('api')->user();
-        $is_checker = $user->placement == 'executor_unit' && $user->type == 'checker' ?? false;
-        return $is_checker;
-    }
 
-    public function getIsFinalCheckerAttribute() {
-        $user = Auth::guard('api')->user();
-        $is_creator = $user->placement == 'main_office' && $user->type == 'checker' ?? false;
-        return $is_creator;
+        if ($user->placement == 'executor_unit' 
+            && $user->type == 'checker'
+            && in_array($this->status, array('created'))) {
+            $is_checker = true;
+        }
+
+        if ($user->placement == 'main_office' 
+            && $user->type == 'checker' 
+            && in_array($this->status, array('final_created'))) {
+            $is_checker = true;
+        }
+
+        return $is_checker ?? false;
     }
 
     public function getIsApproverAttribute() {
         $user = Auth::guard('api')->user();
-        $is_approver = $user->placement == 'executor_unit' && $user->type == 'approver' ?? false;
-        return $is_approver;
-    }
 
-    public function getIsFinalApproverAttribute() {
-        $user = Auth::guard('api')->user();
-        $is_approver = $user->placement == 'main_office' && $user->type == 'approver' ?? false;
-        return $is_approver;
+        if ($user->placement == 'executor_unit' 
+            && $user->type == 'approver'
+            && in_array($this->status, array('checked'))) {
+            $is_approver = true;
+        }
+
+        if ($user->placement == 'main_office' 
+            && $user->type == 'approver' 
+            && in_array($this->status, array('final_created', 'final_checked'))) {
+            $is_approver = true;
+        }
+
+        return $is_approver ?? false;
     }
 }

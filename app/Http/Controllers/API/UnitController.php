@@ -88,6 +88,8 @@ class UnitController extends ResponseController
         }
 
         $input = $request->all();
+        $input['created_at'] = date('Y-m-d h:i:s');
+        $input['updated_at'] = date('Y-m-d h:i:s');
         $unit = Unit::create($input);
 
         return $this->sendResponse($unit, "Submit unit success", 201);
@@ -110,6 +112,7 @@ class UnitController extends ResponseController
         }
 
         $input = $request->all();
+        $input['updated_at'] = date('Y-m-d h:i:s');
         Unit::whereId($id)->update($input);
         $update = Unit::where('id', $id)->first();
 

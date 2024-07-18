@@ -10,6 +10,7 @@ use App\Http\Controllers\API\GrafikController;
 use App\Http\Controllers\API\NotificationsController;
 use App\Http\Controllers\API\UnitController;
 use App\Http\Controllers\API\MediaController;
+use App\Http\Controllers\API\ManageLinkController;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,14 +71,14 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::delete('post/{id}', [PostsController::class, 'deleteById']);
 
     // Media
-    Route::get('media', [PostsController::class, 'index']);
-    Route::get('media/archived', [PostsController::class, 'indexArchived']);
-    Route::post('media', [PostsController::class, 'create']);
-    Route::post('media/restore/{id}', [PostsController::class, 'restoreById']);
-    Route::get('media/{id}', [PostsController::class, 'showById']);
-    Route::patch('media/{id}', [PostsController::class, 'updateById']);
-    Route::patch('media/status/{id}', [PostsController::class, 'updateStatusById']);
-    Route::delete('media/{id}', [PostsController::class, 'deleteById']);
+    Route::get('media', [MediaController::class, 'index']);
+    Route::get('media/archived', [MediaController::class, 'indexArchived']);
+    Route::post('media', [MediaController::class, 'create']);
+    Route::post('media/restore/{id}', [MediaController::class, 'restoreById']);
+    Route::get('media/{id}', [MediaController::class, 'showById']);
+    Route::patch('media/{id}', [MediaController::class, 'updateById']);
+    Route::patch('media/status/{id}', [MediaController::class, 'updateStatusById']);
+    Route::delete('media/{id}', [MediaController::class, 'deleteById']);
 
     // Categories
     Route::get('categories', [CategoriesController::class, 'index']);
@@ -97,6 +98,17 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('unit/{id}', [UnitController::class, 'showById']);
     Route::patch('unit/{id}', [UnitController::class, 'updateById']);
     Route::delete('unit/{id}', [UnitController::class, 'deleteById']);
+
+    // Link
+    Route::get('links', [ManageLinkController::class, 'index']);
+    Route::get('links/archived', [ManageLinkController::class, 'indexArchived']);
+    Route::get('link/{id}', [ManageLinkController::class, 'showById']);
+    Route::get('link/key/{id}', [ManageLinkController::class, 'showByKey']);
+    Route::get('link/key/{id}/active', [ManageLinkController::class, 'showByKeyActive']);
+    Route::post('link', [ManageLinkController::class, 'create']);
+    Route::patch('link/{id}', [ManageLinkController::class, 'updateById']);
+    Route::delete('link/{id}', [ManageLinkController::class, 'deleteById']);
+    Route::post('link/restore/{id}', [ManageLinkController::class, 'restoreById']);
 
     // Notifications
     Route::get('notifications', [NotificationsController::class, 'index']);

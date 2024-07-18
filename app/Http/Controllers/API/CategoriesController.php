@@ -64,6 +64,8 @@ class CategoriesController extends ResponseController
 
         $input = $request->all();
         $input['slug'] = strtolower(preg_replace('/\s+/', '-', $input['title']));
+        $input['created_at'] = date('Y-m-d h:i:s');
+        $input['updated_at'] = date('Y-m-d h:i:s');
         $create = Categories::create($input);
 
         return $this->sendResponse($create, "Submit category success", 201);
@@ -86,8 +88,8 @@ class CategoriesController extends ResponseController
         }
 
         $input = $request->all();
-        $input['slug'] = strtolower(preg_replace('/\s+/', '-', $input['title']));
-        
+        $input['slug'] = Str::slug($input['title']);
+        $input['updated_at'] = date('Y-m-d h:i:s');
         Categories::whereId($id)->update($input);
         $update = Categories::where('id', $id)->first();
 
