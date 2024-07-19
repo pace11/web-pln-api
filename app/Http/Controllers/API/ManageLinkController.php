@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\ManageLink;
 use Validator;
+use Carbon\Carbon;
 
 class ManageLinkController extends ResponseController
 {
@@ -68,9 +69,9 @@ class ManageLinkController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function showByKeyActive($id) {
-        $link = ManageLink::where([['key', $id],['active', true]])->first();
+        $link = ManageLink::where([['key', $id],['active', true]])->paginate(10);
         
-        return $this->sendResponse($link, 'Fetch link success');
+        return $this->sendResponsePagination($link, 'Fetch link success');
     }
 
     /**
@@ -102,8 +103,8 @@ class ManageLinkController extends ResponseController
         ManageLink::where([['key', $request->all()['key']]])->update($update_inactive);
         $input = $request->all();
         $input['title'] = $title[$request->all()['key']];
-        $input['created_at'] = date('Y-m-d h:i:s');
-        $input['updated_at'] = date('Y-m-d h:i:s');
+        $input['created_at'] = Carbon::now();
+        $input['updated_at'] = Carbon::now();
         $unit = ManageLink::create($input);
 
         return $this->sendResponse($unit, "Submit link success", 201);
@@ -129,7 +130,7 @@ class ManageLinkController extends ResponseController
         }
 
         $input = $request->all();
-        $input['updated_at'] = date('Y-m-d h:i:s');
+        $input['updated_at'] = Carbon::now();
         ManageLink::whereId($id)->update($input);
         $update = ManageLink::where('id', $id)->first();
 

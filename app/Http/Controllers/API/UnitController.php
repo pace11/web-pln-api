@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Unit;
 use Validator;
+use Carbon\Carbon;
 
 class UnitController extends ResponseController
 {
@@ -88,8 +89,8 @@ class UnitController extends ResponseController
         }
 
         $input = $request->all();
-        $input['created_at'] = date('Y-m-d h:i:s');
-        $input['updated_at'] = date('Y-m-d h:i:s');
+        $input['created_at'] = Carbon::now();
+        $input['updated_at'] = Carbon::now();
         $unit = Unit::create($input);
 
         return $this->sendResponse($unit, "Submit unit success", 201);
@@ -112,7 +113,7 @@ class UnitController extends ResponseController
         }
 
         $input = $request->all();
-        $input['updated_at'] = date('Y-m-d h:i:s');
+        $input['updated_at'] = Carbon::now();
         Unit::whereId($id)->update($input);
         $update = Unit::where('id', $id)->first();
 

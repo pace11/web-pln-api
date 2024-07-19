@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class CategoriesSeeder extends Seeder
 {
@@ -18,26 +19,26 @@ class CategoriesSeeder extends Seeder
             [
                 'slug' => 'siaran-pers',
                 'title' => 'Siaran Pers',
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
                 'slug' => 'awards',
                 'title' => 'Awards',
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
                 'slug' => 'kegiatan',
                 'title' => 'Kegiatan',
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [
                 'slug' => 'media',
                 'title' => 'Media',
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
         ]);
     }

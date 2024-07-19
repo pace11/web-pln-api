@@ -90,17 +90,9 @@ class Posts extends Model
     public function getIsCheckerAttribute() {
         $user = Auth::guard('api')->user();
 
-        if ($user->placement == 'executor_unit' 
-            && $user->type == 'checker'
-            && in_array($this->status, array('created'))) {
-            $is_checker = true;
-        }
+        if ($user->placement == 'executor_unit' && $user->type == 'checker') $is_checker = true;
 
-        if ($user->placement == 'main_office' 
-            && $user->type == 'checker' 
-            && in_array($this->status, array('final_created'))) {
-            $is_checker = true;
-        }
+        if ($user->placement == 'main_office' && $user->type == 'checker') $is_checker = true;
 
         return $is_checker ?? false;
     }
@@ -108,17 +100,9 @@ class Posts extends Model
     public function getIsApproverAttribute() {
         $user = Auth::guard('api')->user();
 
-        if ($user->placement == 'executor_unit' 
-            && $user->type == 'approver'
-            && in_array($this->status, array('checked'))) {
-            $is_approver = true;
-        }
+        if ($user->placement == 'executor_unit' && $user->type == 'approver') $is_approver = true;
 
-        if ($user->placement == 'main_office' 
-            && $user->type == 'approver' 
-            && in_array($this->status, array('final_created', 'final_checked'))) {
-            $is_approver = true;
-        }
+        if ($user->placement == 'main_office' && $user->type == 'approver') $is_approver = true;
 
         return $is_approver ?? false;
     }

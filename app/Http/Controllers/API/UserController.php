@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Unit;
 use App\Models\Role;
 use Validator;
+use Carbon\Carbon;
 
 class UserController extends ResponseController
 {
@@ -40,8 +41,9 @@ class UserController extends ResponseController
             'name' => 'required',
             'email' => 'required|email',
             'password' => 'required',
+            'placement' => 'required',
             'type' => 'required',
-            'unit_id' => 'required',
+            'unit_id' => '',
         ]);
         $input = $request->all();
 
@@ -56,8 +58,8 @@ class UserController extends ResponseController
         }
 
         $input['password'] = bcrypt($input['password']);
-        $input['created_at'] = date('Y-m-d h:i:s');
-        $input['updated_at'] = date('Y-m-d h:i:s');
+        $input['created_at'] = Carbon::now();
+        $input['updated_at'] = Carbon::now();
         $user = User::create($input);
 
         return $this->sendResponse($user, "Register user success");
@@ -66,8 +68,9 @@ class UserController extends ResponseController
     public function updateById(Request $request, $id) {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
+            'placement' => 'required',
             'type' => 'required',
-            'unit_id' => 'required',
+            'unit_id' => '',
         ]);
         $input = $request->all();
 
@@ -89,7 +92,7 @@ class UserController extends ResponseController
             $input['password'] = bcrypt($request->all()['password']);
         }
 
-        $input['updated_at'] = date('Y-m-d h:i:s');
+        $input['updated_at'] = Carbon::now();
         User::whereId($id)->update($input);
         $update = User::whereId($id)->first();
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\ResponseController as ResponseController;
 use App\Models\Categories;
 use Validator;
+use Carbon\Carbon;
 
 class CategoriesController extends ResponseController
 {
@@ -64,8 +65,8 @@ class CategoriesController extends ResponseController
 
         $input = $request->all();
         $input['slug'] = strtolower(preg_replace('/\s+/', '-', $input['title']));
-        $input['created_at'] = date('Y-m-d h:i:s');
-        $input['updated_at'] = date('Y-m-d h:i:s');
+        $input['created_at'] = Carbon::now();
+        $input['updated_at'] = Carbon::now();
         $create = Categories::create($input);
 
         return $this->sendResponse($create, "Submit category success", 201);
@@ -89,7 +90,7 @@ class CategoriesController extends ResponseController
 
         $input = $request->all();
         $input['slug'] = Str::slug($input['title']);
-        $input['updated_at'] = date('Y-m-d h:i:s');
+        $input['updated_at'] = Carbon::now();
         Categories::whereId($id)->update($input);
         $update = Categories::where('id', $id)->first();
 

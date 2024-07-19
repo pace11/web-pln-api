@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class ManageLink extends Model
 {
@@ -18,6 +19,9 @@ class ManageLink extends Model
     protected $guard = [
         'created_at', 'updated_at'
     ];
+    protected $appends = [
+        'is_superadmin',
+    ];
     protected $dates = [
         'deleted_at'
     ];
@@ -26,4 +30,10 @@ class ManageLink extends Model
     ];
 
     public $timestamps = true;
+
+    public function getIsSuperadminAttribute() {
+        $user = Auth::guard('api')->user();
+        $is_superadmin = $user->type == 'superadmin' ?? false;
+        return $is_superadmin;
+    }
 }

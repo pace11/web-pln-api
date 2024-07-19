@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Support\Str;
 use Illuminate\Database\Seeder;
+use Carbon\Carbon;
 
 class PostsSeeder extends Seeder
 {
@@ -26,8 +27,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 3, 
                 'unit_id' => 1,
                 'users_id' => 2,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'pln-mobile-proliga-2024-resmi-dimulai-ajang-kompetisi-profesional-bola-voli-paling-bergengsi-di-tanah-air',
@@ -39,8 +40,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 1,
                 'unit_id' => 1, 
                 'users_id' => 2, 
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'beli-tiket-pevs-2024-di-aplikasi-pln-mobile-dapat-diskon-tambah-daya-hingga-60-persen',
@@ -52,8 +53,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 1,
                 'unit_id' => 1, 
                 'users_id' => 2,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'tuan-rumah-di-proliga-seri-semarang-jakarta-electric-pln-siapkan-strategi-sapu-bersih-kemenangan',
@@ -65,8 +66,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 1,
                 'unit_id' => 1, 
                 'users_id' => 2, 
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'tampil-trengginas-jakarta-electric-pln-raih-kemenangan-di-pertandingan-perdana-pln-mobile-proliga-2024',
@@ -78,8 +79,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 1,
                 'unit_id' => 1, 
                 'users_id' => 2,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'panen-raya-sukses-program-electrifying-agriculture-pln-mampu-tingkatkan-produktivitas-pertanian-padi-di-ponorogo',
@@ -91,8 +92,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 1,
                 'unit_id' => 1, 
                 'users_id' => 2,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'launching-kemudahan-pengurusan-perizinan-berusaha-kegiatan-stasiun-pengisian-kendaraan-listrik-umum-spklu-festival-like',
@@ -104,8 +105,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 3,
                 'unit_id' => 1, 
                 'users_id' => 2,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'dihadiri-wakil-presiden-pln-sukses-hadirkan-listrik-tanpa-kedip-haul-abah-guru-sekumpul',
@@ -117,8 +118,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 3,
                 'unit_id' => 1, 
                 'users_id' => 2, 
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'proliga-2024-siap-digelar-di-semarang-banyak-promo-beli-tiket-di-aplikasi-pln-mobile',
@@ -130,8 +131,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 1,
                 'unit_id' => 1, 
                 'users_id' => 2,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'presiden-jokowi-resmikan-bendungan-kuwil-kawangkoan-pln-siap-maksimalkan-bendungan-kuwil-untuk-produksi-listrik-bersih',
@@ -143,8 +144,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 3,
                 'unit_id' => 1, 
                 'users_id' => 2,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'jakarta-electric-pln-jadi-tuan-rumah-pln-mobile-proliga-seri-semarang-ini-jadwal-pertandingannya',
@@ -156,8 +157,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 1,
                 'unit_id' => 1, 
                 'users_id' => 2,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'perkuat-peran-perempuan-srikandi-pln-intensifkan-program-pengembangan-kapasitas',
@@ -169,8 +170,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 3,
                 'unit_id' => 1,
                 'users_id' => 2,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'jangan-sampai-kehabisan-tiket-proliga-bisa-dibeli-di-pln-mobile',
@@ -182,8 +183,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 1,
                 'unit_id' => 1,
                 'users_id' => 2,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'dukung-penghijauan-sekitar-pltu-pln-serahkan-10-ribu-tanaman-indigofera-di-desa-tubanan',
@@ -195,8 +196,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 3,
                 'unit_id' => 1,
                 'users_id' => 2,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'pln-gandeng-huawei-kembangkan-joint-innovation-center-perkuat-fondasi-digital-untuk-transisi-energi',
@@ -208,8 +209,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 1,
                 'unit_id' => 1,
                 'users_id' => 2,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'pasok-listrik-tanpa-kedip-pln-sukseskan-festival-belitung-beach-di-bangka-belitung',
@@ -221,8 +222,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 3,
                 'unit_id' => 1,
                 'users_id' => 2,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
             [ 
                 'slug' => 'animo-tinggi-institut-teknologi-pln-perpanjang-waktu-penerimaan-calon-mahasiswa-hingga-29-april',
@@ -234,8 +235,8 @@ class PostsSeeder extends Seeder
                 'categories_id' => 1,
                 'unit_id' => 1,
                 'users_id' => 2,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
             ],
         ]);
     }

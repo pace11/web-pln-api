@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Media;
 use Validator;
+use Carbon\Carbon;
 
 class MediaController extends ResponseController
 {
@@ -66,6 +67,7 @@ class MediaController extends ResponseController
     public function create(Request $request) {
         $user = Auth::guard('api')->user();
         $validator = Validator::make($request->all(), [
+            'title' => 'required',
             'url' => 'required',
             'caption' => 'required',
             'target_post' => 'required',
@@ -77,9 +79,9 @@ class MediaController extends ResponseController
 
         $input = $request->all();
         $input['users_id'] = $user->id;
-        $input['unit_id'] = $user->unit_id;
-        $input['created_at'] = date('Y-m-d h:i:s');
-        $input['updated_at'] = date('Y-m-d h:i:s');
+        $input['unit_id'] = $user->unit_id ?? null;
+        $input['created_at'] = Carbon::now();
+        $input['updated_at'] = Carbon::now();
         $media = Media::create($input);
 
         return $this->sendResponse($media, "Submit media success", 201);
@@ -95,6 +97,7 @@ class MediaController extends ResponseController
     public function updateById(Request $request, $id) {
         $user = Auth::guard('api')->user();
         $validator = Validator::make($request->all(), [
+            'title' => 'required',
             'url' => 'required',
             'caption' => 'required',
             'target_post' => 'required',
@@ -105,7 +108,7 @@ class MediaController extends ResponseController
         }
 
         $input = $request->all();
-        $input['updated_at'] = date('Y-m-d h:i:s');
+        $input['updated_at'] = Carbon::now();
         Media::whereId($id)->update($input);
         $update = Media::where('id', $id)->first();
 
@@ -156,7 +159,6 @@ class MediaController extends ResponseController
         $validator = Validator::make($request->all(), [
             'status' => 'required',
             'remarks' => '',
-            'posted' => '',
         ]);
 
         if($validator->fails()){
@@ -166,43 +168,44 @@ class MediaController extends ResponseController
         $placement = [
             'main_office' => '(Kantor Induk)',
             'executor_unit' => '(Unit Pelaksana)',
+            'superadmin' => '(Superadmin)'
         ];
 
         $payload = [
             'checked' => [
-                'checked_by_date' => date('Y-m-d h:i:s'),
-                'checked_by_email' => $user->email." ".$placement[$user->placement],
+                'checked_by_date' => Carbon::now(),
+                'checked_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'checked_by_remarks' => $request->all()['remarks']
             ],
             'final_checked' => [
-                'final_checked_by_date' => date('Y-m-d h:i:s'),
-                'final_checked_by_email' => $user->email." ".$placement[$user->placement],
+                'final_checked_by_date' => Carbon::now(),
+                'final_checked_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'final_checked_by_remarks' => $request->all()['remarks']
             ],
             'approved' => [
-                'approved_by_date' => date('Y-m-d h:i:s'),
-                'approved_by_email' => $user->email." ".$placement[$user->placement],
+                'approved_by_date' => Carbon::now(),
+                'approved_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'approved_by_remarks' => $request->all()['remarks'],
             ],
             'final_approved' => [
-                'final_approved_by_date' => date('Y-m-d h:i:s'),
-                'final_approved_by_email' => $user->email." ".$placement[$user->placement],
+                'final_approved_by_date' => Carbon::now(),
+                'final_approved_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'final_approved_by_remarks' => $request->all()['remarks'],
             ],
             'rejected' => [
-                'rejected_by_date' => date('Y-m-d h:i:s'),
-                'rejected_by_email' => $user->email." ".$placement[$user->placement],
+                'rejected_by_date' => Carbon::now(),
+                'rejected_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'rejected_by_remarks' => $request->all()['remarks']
             ],
             'final_rejected' => [
-                'final_rejected_by_date' => date('Y-m-d h:i:s'),
-                'final_rejected_by_email' => $user->email." ".$placement[$user->placement],
+                'final_rejected_by_date' => Carbon::now(),
+                'final_rejected_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'final_rejected_by_remarks' => $request->all()['remarks']
             ],
         ];
 
         $input = $payload[$request->all()['status']];
-        $input['updated_at'] = date('Y-m-d h:i:s');
+        $input['updated_at'] = Carbon::now();
         $input['status'] = $request->all()['status'];
 
         Media::whereId($id)->update($input);

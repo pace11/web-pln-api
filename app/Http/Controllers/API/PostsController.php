@@ -10,6 +10,7 @@ use App\Models\Posts;
 use App\Models\PostsWeb;
 use App\Models\Notifications;
 use Validator;
+use Carbon\Carbon;
 
 class PostsController extends ResponseController
 {
@@ -24,7 +25,7 @@ class PostsController extends ResponseController
         $banner = $request->query('banner');
         $slug = $request->query('slug');
 
-        if ($user->type == 'superadmin') {
+        if ($user->type == 'superadmin' || is_null($user->placement) || $user->placement == 'main_office') {
             $filter = [];
         } else {
             $filter = [['unit_id', $user->unit_id]];
@@ -168,8 +169,11 @@ class PostsController extends ResponseController
         $input['slug'] = Str::slug($input['title']);
         $input['users_id'] = $user->id;
         $input['unit_id'] = $user->unit_id;
-        $input['created_at'] = date('Y-m-d h:i:s');
-        $input['updated_at'] = date('Y-m-d h:i:s');
+        $input['created_at'] = Carbon::now();
+        $input['updated_at'] = Carbon::now();
+
+        if (is_null($user->placement) || $user->placement == 'main_office') $input['status'] = 'final_created';
+
         $posts = Posts::create($input);
         $detail_posts = Posts::where('id', $posts->id)->first();
         
@@ -177,8 +181,9 @@ class PostsController extends ResponseController
             Notifications::create([
                 'users_id' => $user->id,
                 'posts_id' => $detail_posts->id,
-                'created_at' => date('Y-m-d h:i:s'),
-                'updated_at' => date('Y-m-d h:i:s'),
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+                'status' => is_null($user->placement) || $user->placement == 'main_office' ? 'final_created' : 'created'
             ]);
         }
 
@@ -209,7 +214,7 @@ class PostsController extends ResponseController
 
         $input = $request->all();
         $input['slug'] = Str::slug($input['title']);
-        $input['updated_at'] = date('Y-m-d h:i:s');
+        $input['updated_at'] = Carbon::now();
 
         Posts::whereId($id)->update($input);
         $update = Posts::where('id', $id)->first();
@@ -271,39 +276,39 @@ class PostsController extends ResponseController
         $placement = [
             'main_office' => '(Kantor Induk)',
             'executor_unit' => '(Unit Pelaksana)',
+            'superadmin' => '(Superadmin)'
         ];
 
         $payload = [
             'checked' => [
-                'checked_by_date' => date('Y-m-d h:i:s'),
-                'checked_by_email' => $user->email." ".$placement[$user->placement],
+                'checked_by_date' => Carbon::now(),
+                'checked_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'checked_by_remarks' => $request->all()['remarks']
             ],
             'final_checked' => [
-                'final_checked_by_date' => date('Y-m-d h:i:s'),
-                'final_checked_by_email' => $user->email." ".$placement[$user->placement],
+                'final_checked_by_date' => Carbon::now(),
+                'final_checked_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'final_checked_by_remarks' => $request->all()['remarks']
             ],
             'approved' => [
-                'approved_by_date' => date('Y-m-d h:i:s'),
-                'approved_by_email' => $user->email." ".$placement[$user->placement],
+                'approved_by_date' => Carbon::now(),
+                'approved_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'approved_by_remarks' => $request->all()['remarks'],
-                'posted' => $request->all()['posted']
             ],
             'final_approved' => [
-                'final_approved_by_date' => date('Y-m-d h:i:s'),
-                'final_approved_by_email' => $user->email." ".$placement[$user->placement],
+                'final_approved_by_date' => Carbon::now(),
+                'final_approved_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'final_approved_by_remarks' => $request->all()['remarks'],
                 'posted' => $request->all()['posted']
             ],
             'rejected' => [
-                'rejected_by_date' => date('Y-m-d h:i:s'),
-                'rejected_by_email' => $user->email." ".$placement[$user->placement],
+                'rejected_by_date' => Carbon::now(),
+                'rejected_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'rejected_by_remarks' => $request->all()['remarks']
             ],
             'final_rejected' => [
-                'final_rejected_by_date' => date('Y-m-d h:i:s'),
-                'final_rejected_by_email' => $user->email." ".$placement[$user->placement],
+                'final_rejected_by_date' => Carbon::now(),
+                'final_rejected_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'final_rejected_by_remarks' => $request->all()['remarks']
             ],
         ];
@@ -318,7 +323,7 @@ class PostsController extends ResponseController
             'users_id' => $update->users_id,
             'posts_id' => $update->id,
             'status' => $request->all()['status'],
-            'updated_at' => date('Y-m-d h:i:s')
+            'updated_at' => Carbon::now()
         ]);
 
         return $this->sendResponse($update, "Update posts success");

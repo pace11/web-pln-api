@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('notifications', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->bigInteger('posts_id')->nullable();
-            $table->enum('status', ['created', 'checked', 'approved', 'rejected'])->default('created');
+            $table->enum('status', ['created', 'checked', 'approved', 'rejected', 'final_created', 'final_checked', 'final_approved', 'final_rejected'])->default('created');
             $table->bigInteger('users_id')->unsigned()->nullable();
             $table->timestamps();
         });
