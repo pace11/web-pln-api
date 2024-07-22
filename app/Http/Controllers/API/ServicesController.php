@@ -25,7 +25,7 @@ class ServicesController extends ResponseController
         Storage::putFileAs('images', $request->file, $filename);
 
         $response = [
-            'image' => $filename
+            'image' => env('APP_URL_IMAGE', '')."/".$filename
         ];
         
         return $this->sendResponse($response, 'Upload image success');

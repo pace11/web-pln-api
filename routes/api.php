@@ -46,7 +46,9 @@ Route::prefix('web')->group(function () {
 Route::group(['middleware' => 'auth:api'], function() {
 
     // Grafik
-    Route::get('grafik', [GrafikController::class, 'index']);
+    Route::get('grafik/counts', [GrafikController::class, 'index']);
+    Route::get('grafik/posts', [GrafikController::class, 'indexPostStatusByUnit']);
+    Route::get('grafik/unit', [GrafikController::class, 'indexUserTypeByUnit']);
 
     // logout / detail user
     Route::post('logout', [UserController::class, 'logout']);
@@ -60,6 +62,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     // Posts
     Route::get('posts', [PostsController::class, 'index']);
+    Route::get('posts/download', [PostsController::class, 'indexDownload']);
     Route::get('posts/archived', [PostsController::class, 'indexArchived']);
     Route::post('post', [PostsController::class, 'create']);
     Route::post('post/restore/{id}', [PostsController::class, 'restoreById']);
@@ -68,6 +71,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('posts/relates', [PostsController::class, 'showRelates']);
     Route::patch('post/{id}', [PostsController::class, 'updateById']);
     Route::patch('post/status/{id}', [PostsController::class, 'updateStatusById']);
+    Route::post('post/recreate/{id}', [PostsController::class, 'updateReplicateById']);
     Route::delete('post/{id}', [PostsController::class, 'deleteById']);
 
     // Media

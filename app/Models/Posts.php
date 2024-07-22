@@ -22,6 +22,7 @@ class Posts extends Model
         'posted',
         'banner',
         'status',
+        'recreated',
         'checked_by_date',
         'checked_by_email',
         'checked_by_remarks',
@@ -59,6 +60,7 @@ class Posts extends Model
     protected $casts = [
         'posted' => 'boolean',
         'banner' => 'boolean',
+        'recreated' => 'boolean',
     ];
 
     public $timestamps = true;

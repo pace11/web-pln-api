@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('thumbnail')->nullable();
             $table->boolean('posted')->nullable();
             $table->boolean('banner')->nullable();
+            $table->boolean('recreated')->nullable();
             $table->enum('status', ['created', 'checked', 'approved', 'rejected', 'final_created', 'final_checked', 'final_approved', 'final_rejected'])->default('created');
             $table->timestamp('checked_by_date', $precision = 0)->nullable();
             $table->text('checked_by_email')->nullable();

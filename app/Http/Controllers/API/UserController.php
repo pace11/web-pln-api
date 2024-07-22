@@ -14,22 +14,14 @@ use Carbon\Carbon;
 class UserController extends ResponseController
 {
 
-    public function index() {
+    public function index(Request $request) {
         $user = Auth::guard('api')->user();
+        $placement = $request->query('placement') ?? '';
+        $filter = [
+            ['type', '!=', 'superadmin']
+        ];
 
-        if ($user->type == 'superadmin') {
-            $filter = [
-                ['type', '!=', 'superadmin']
-            ];
-        }
-
-        if ($user->type == 'admin') {
-            $filter = [
-                ['type', '!=', 'superadmin'],
-                ['type', '!=', 'admin'],
-                ['unit_id', '=', $user->unit_id]
-            ];
-        }
+        if ($placement) $filter[] = ['placement', '=', $placement];
 
         $user = User::with(['unit'])->where($filter)->orderBy('updated_at', 'desc')->paginate(10);
 

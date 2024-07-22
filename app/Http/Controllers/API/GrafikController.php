@@ -9,43 +9,110 @@ use Illuminate\Support\Str;
 use App\Models\Posts;
 use App\Models\Categories;
 use App\Models\User;
+use App\Models\Unit;
+use App\Models\Media;
 use Validator;
 
 class GrafikController extends ResponseController
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index(Request $request) {
+ 
+    public function index() {
         $user = Auth::guard('api')->user();
 
         if ($user->type == 'superadmin') {
             $filter = [];
-            $filter_user = [];
+            $filter_user = [
+                ['type','!=','superadmin'],
+            ];
         } else {
             $filter = [['unit_id', $user->unit_id]];
             $filter_user = [
                 ['unit_id','=',$user->unit_id],
                 ['type','!=','superadmin'],
-                ['type','!=','admin']
             ];
         }
 
         $response = [
-            "post_count" => [
-                "total_posts" => Posts::where($filter)->count(),
-                "created_posts" => Posts::where($filter)->where('status', 'pending')->count(),
-                "checked_posts" => Posts::where($filter)->where('status', 'checked')->count(),
-                "approved_posts" => Posts::where($filter)->where('status', 'approved')->count(),
-                "rejected_posts" => Posts::where($filter)->where('status', 'rejected')->count(),
-            ],
-            "category_count" => Categories::count(),
-            "user_count" => User::where($filter_user)->count()
+            "post_count" => Posts::where($filter)->count(),
+            "media_count" => Media::where($filter)->count(),
+            "category_news_count" => Categories::count(),
+            "user_count" => User::where($filter_user)->count(),
+            "unit_count" => Unit::count()
         ];
 
-        return $this->sendResponse($response, "Fetch grafik success");
+        return $this->sendResponse($response, "Fetch grafik count success");
+    }
+
+    public function getStatusPostByUnit($status) {
+        $user = Auth::guard('api')->user();
+
+        if ($user->type == 'superadmin') $filter = [];
+        else $filter = [['id','=',$user->unit_id]];
+
+        $unit = Unit::where($filter)->get();
+        $response = [];
+
+        foreach($unit as $item) {
+            $response[] = [
+                'primary' => $item->title,
+                'secondary' => Posts::where([['unit_id','=',$item->id],['status','LIKE','%'.$status.'%']])->count()
+            ];
+        }
+
+        return $response;
+    }
+
+    public function getUserTypeByUnit($type) {
+        $user = Auth::guard('api')->user();
+
+        if ($user->type == 'superadmin') $filter = [];
+        else $filter = [['id','=',$user->unit_id]];
+
+        $unit = Unit::where($filter)->get();
+        $response = [];
+
+        foreach($unit as $item) {
+            $response[] = [
+                'primary' => $item->title,
+                'secondary' => User::where([['unit_id','=',$item->id],['type','LIKE','%'.$type.'%']])->count()
+            ];
+        }
+
+        return $response;
+    }
+
+    public function indexPostStatusByUnit() {
+        $user = Auth::guard('api')->user();
+        $response = [];
+
+        if ($user->type == 'superadmin') $filter = [];
+        else $filter = [['id','=',$user->unit_id]];
+
+        $status = array('created', 'checked', 'approved', 'rejected');
+        
+        foreach($status as $item) {
+            $response[] = [
+                'label' => $item,
+                'data' => $this->getStatusPostByUnit($item)
+            ];
+        }
+
+        return $this->sendResponse($response, "Fetch grafik post success");
+    }
+
+    public function indexUserTypeByUnit() {
+        $response = [];
+
+        $type = array('creator', 'checker', 'approver');
+        
+        foreach($type as $item) {
+            $response[] = [
+                'label' => $item,
+                'data' => $this->getUserTypeByUnit($item)
+            ];
+        }
+
+        return $this->sendResponse($response, "Fetch grafik unit success");
     }
 
 }
