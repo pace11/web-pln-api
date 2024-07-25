@@ -13,21 +13,23 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('scoring_item', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name');
-            $table->string('email')->unique()->nullable();
-            $table->string('password')->nullable();
-            $table->enum('placement', ['main_office', 'executor_unit'])->nullable();
-            $table->enum('type', ['superadmin', 'creator', 'checker', 'approver', 'approver_2', 'approver_3'])->nullable();
-            $table->rememberToken();
+            $table->timestamp('period_date', $precision = 0)->nullable();
+            $table->text('attachment')->nullable();
+            $table->integer('realization')->default(0);
+            $table->integer('value')->default(0);
+            $table->bigInteger('scoring_id')->unsigned()->nullable();
             $table->integer('unit_id')->unsigned()->nullable();
+            $table->bigInteger('users_id')->unsigned()->nullable();
             $table->softDeletes($column = 'deleted_at', $precision = 0);
             $table->timestamps();
         });
 
-        Schema::table('users', function (Blueprint $table) {
+        Schema::table('scoring_item', function (Blueprint $table) {
+            $table->foreign('scoring_id')->references('id')->on('scoring');
             $table->foreign('unit_id')->references('id')->on('unit');
+            $table->foreign('users_id')->references('id')->on('users');
         });
     }
 
@@ -38,6 +40,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('scoring_item');
     }
 };

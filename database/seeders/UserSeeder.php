@@ -90,6 +90,26 @@ class UserSeeder extends Seeder
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
             ],
+            [
+                'name' => 'approver 2 kantor induk',
+                'email' => 'approver2induk@pln.com',
+                'password' => bcrypt('12345'),
+                'type' => 'approver_2',
+                'placement' => 'main_office',
+                'unit_id' => null,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'approver 3 kantor induk',
+                'email' => 'approver3induk@pln.com',
+                'password' => bcrypt('12345'),
+                'type' => 'approver_3',
+                'placement' => 'main_office',
+                'unit_id' => null,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ],
         ]);
     }
 }

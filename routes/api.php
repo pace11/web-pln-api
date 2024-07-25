@@ -11,6 +11,12 @@ use App\Http\Controllers\API\NotificationsController;
 use App\Http\Controllers\API\UnitController;
 use App\Http\Controllers\API\MediaController;
 use App\Http\Controllers\API\ManageLinkController;
+use App\Http\Controllers\API\AccountInfluencerController;
+use App\Http\Controllers\API\AccountInfluencerItemController;
+use App\Http\Controllers\API\InternalCommunicationController;
+use App\Http\Controllers\API\InternalCommunicationItemController;
+use App\Http\Controllers\API\ScoringController;
+use App\Http\Controllers\API\ScoringItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -113,6 +119,48 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::patch('link/{id}', [ManageLinkController::class, 'updateById']);
     Route::delete('link/{id}', [ManageLinkController::class, 'deleteById']);
     Route::post('link/restore/{id}', [ManageLinkController::class, 'restoreById']);
+
+    // Account Influencer
+    Route::get('account-influencer', [AccountInfluencerController::class, 'index']);
+    Route::post('account-influencer', [AccountInfluencerController::class, 'create']);
+    Route::get('account-influencer/{id}', [AccountInfluencerController::class, 'showById']);
+    Route::patch('account-influencer/{id}', [AccountInfluencerController::class, 'updateById']);
+    Route::delete('account-influencer/{id}', [AccountInfluencerController::class, 'deleteById']);
+
+    // Account Influencer Item
+    Route::get('account-influencer-item', [AccountInfluencerItemController::class, 'index']);
+    Route::post('account-influencer-item', [AccountInfluencerItemController::class, 'create']);
+    Route::get('account-influencer-item/{id}', [AccountInfluencerItemController::class, 'showById']);
+    Route::patch('account-influencer-item/{id}', [AccountInfluencerItemController::class, 'updateById']);
+    Route::delete('account-influencer-item/{id}', [AccountInfluencerItemController::class, 'deleteById']);
+
+    // Internal Communication
+    Route::get('internal_communication', [InternalCommunicationController::class, 'index']);
+    Route::post('internal_communication', [InternalCommunicationController::class, 'create']);
+    Route::get('internal_communication/{id}', [InternalCommunicationController::class, 'showById']);
+    Route::patch('internal_communication/{id}', [InternalCommunicationController::class, 'updateById']);
+    Route::delete('internal_communication/{id}', [InternalCommunicationController::class, 'deleteById']);
+
+    // Internal Communication Item
+    Route::get('internal_communication-item', [InternalCommunicationItemController::class, 'index']);
+    Route::post('internal_communication-item', [InternalCommunicationItemController::class, 'create']);
+    Route::get('internal_communication-item/{id}', [InternalCommunicationItemController::class, 'showById']);
+    Route::patch('internal_communication-item/{id}', [InternalCommunicationItemController::class, 'updateById']);
+    Route::delete('internal_communication-item/{id}', [InternalCommunicationItemController::class, 'deleteById']);
+
+    // Scoring
+    Route::get('scoring', [ScoringController::class, 'index']);
+    Route::post('scoring', [ScoringController::class, 'create']);
+    Route::get('scoring/{id}', [ScoringController::class, 'showById']);
+    Route::patch('scoring/{id}', [ScoringController::class, 'updateById']);
+    Route::delete('scoring/{id}', [ScoringController::class, 'deleteById']);
+
+    // Scoring Item
+    Route::get('scoring-item', [ScoringItemController::class, 'index']);
+    Route::post('scoring-item', [ScoringItemController::class, 'create']);
+    Route::get('scoring-item/{id}', [ScoringItemController::class, 'showById']);
+    Route::patch('scoring-item/{id}', [ScoringItemController::class, 'updateById']);
+    Route::delete('scoring-item/{id}', [ScoringItemController::class, 'deleteById']);
 
     // Notifications
     Route::get('notifications', [NotificationsController::class, 'index']);

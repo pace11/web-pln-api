@@ -48,4 +48,8 @@ class User extends Authenticatable
     public function unit() {
         return $this->belongsTo(Unit::class, 'unit_id', 'id');
     }
+
+    public function account_influencer() {
+        return $this->belongsTo(AccountInfluencer::class, 'account_influencer_id', 'id');
+    }
 }

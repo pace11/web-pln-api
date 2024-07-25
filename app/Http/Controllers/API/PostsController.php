@@ -312,6 +312,11 @@ class PostsController extends ResponseController
                 'final_checked_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'final_checked_by_remarks' => $request->all()['remarks']
             ],
+            'final_created' => [
+                'final_created_by_date' => Carbon::now(),
+                'final_created_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
+                'final_created_by_remarks' => $request->all()['remarks']
+            ],
             'approved' => [
                 'approved_by_date' => Carbon::now(),
                 'approved_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
@@ -323,6 +328,18 @@ class PostsController extends ResponseController
                 'final_approved_by_remarks' => $request->all()['remarks'],
                 'posted' => $request->all()['posted']
             ],
+            'final_approved_2' => [
+                'final_approved_2_by_date' => Carbon::now(),
+                'final_approved_2_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
+                'final_approved_2_by_remarks' => $request->all()['remarks'],
+                'posted' => $request->all()['posted']
+            ],
+            'final_approved_3' => [
+                'final_approved_3_by_date' => Carbon::now(),
+                'final_approved_3_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
+                'final_approved_3_by_remarks' => $request->all()['remarks'],
+                'posted' => $request->all()['posted']
+            ],
             'rejected' => [
                 'rejected_by_date' => Carbon::now(),
                 'rejected_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
@@ -332,6 +349,16 @@ class PostsController extends ResponseController
                 'final_rejected_by_date' => Carbon::now(),
                 'final_rejected_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'final_rejected_by_remarks' => $request->all()['remarks']
+            ],
+            'final_rejected_2' => [
+                'final_rejected_2_by_date' => Carbon::now(),
+                'final_rejected_2_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
+                'final_rejected_2_by_remarks' => $request->all()['remarks']
+            ],
+            'final_rejected_3' => [
+                'final_rejected_3_by_date' => Carbon::now(),
+                'final_rejected_3_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
+                'final_rejected_3_by_remarks' => $request->all()['remarks']
             ],
         ];
 

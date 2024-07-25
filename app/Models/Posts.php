@@ -29,18 +29,33 @@ class Posts extends Model
         'final_checked_by_date',
         'final_checked_by_email',
         'final_checked_by_remarks',
+        'final_created_by_date',
+        'final_created_by_email',
+        'final_created_by_remarks',
         'approved_by_date',
         'approved_by_email',
         'approved_by_remarks',
         'final_approved_by_date',
         'final_approved_by_email',
         'final_approved_by_remarks',
+        'final_approved_2_by_date',
+        'final_approved_2_by_email',
+        'final_approved_2_by_remarks',
+        'final_approved_3_by_date',
+        'final_approved_3_by_email',
+        'final_approved_3_by_remarks',
         'rejected_by_date',
         'rejected_by_email',
         'rejected_by_remarks',
         'final_rejected_by_date',
         'final_rejected_by_email',
         'final_rejected_by_remarks',
+        'final_rejected_2_by_date',
+        'final_rejected_2_by_email',
+        'final_rejected_2_by_remarks',
+        'final_rejected_3_by_date',
+        'final_rejected_3_by_email',
+        'final_rejected_3_by_remarks',
         'categories_id',
         'unit_id',
         'users_id',
@@ -51,8 +66,11 @@ class Posts extends Model
     protected $appends = [
         'is_own_post',
         'is_superadmin',
+        'is_creator',
         'is_checker',
         'is_approver',
+        'is_approver_2',
+        'is_approver_3',
     ];
     protected $dates = [
         'deleted_at'
@@ -89,6 +107,14 @@ class Posts extends Model
         return $is_superadmin;
     }
 
+    public function getIsCreatorAttribute() {
+        $user = Auth::guard('api')->user();
+
+        if ($user->placement == 'main_office' && $user->type == 'creator') $is_creator = true;
+
+        return $is_creator ?? false;
+    }
+
     public function getIsCheckerAttribute() {
         $user = Auth::guard('api')->user();
 
@@ -107,5 +133,21 @@ class Posts extends Model
         if ($user->placement == 'main_office' && $user->type == 'approver') $is_approver = true;
 
         return $is_approver ?? false;
+    }
+
+    public function getIsApprover2Attribute() {
+        $user = Auth::guard('api')->user();
+
+        if ($user->placement == 'main_office' && $user->type == 'approver_2') $is_approver_2 = true;
+
+        return $is_approver_2 ?? false;
+    }
+
+    public function getIsApprover3Attribute() {
+        $user = Auth::guard('api')->user();
+
+        if ($user->placement == 'main_office' && $user->type == 'approver_3') $is_approver_3 = true;
+
+        return $is_approver_3 ?? false;
     }
 }

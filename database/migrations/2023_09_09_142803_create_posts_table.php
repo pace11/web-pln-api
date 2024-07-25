@@ -22,25 +22,53 @@ return new class extends Migration
             $table->boolean('posted')->nullable();
             $table->boolean('banner')->nullable();
             $table->boolean('recreated')->nullable();
-            $table->enum('status', ['created', 'checked', 'approved', 'rejected', 'final_created', 'final_checked', 'final_approved', 'final_rejected'])->default('created');
+            $table->enum('status', [
+                'created',
+                'checked',
+                'approved',
+                'rejected',
+                'final_created',
+                'final_checked',
+                'final_approved',
+                'final_approved_2',
+                'final_approved_3',
+                'final_rejected',
+                'final_rejected_2',
+                'final_rejected_3'
+                ])->default('created');
             $table->timestamp('checked_by_date', $precision = 0)->nullable();
             $table->text('checked_by_email')->nullable();
             $table->text('checked_by_remarks')->nullable();
             $table->timestamp('final_checked_by_date', $precision = 0)->nullable();
             $table->text('final_checked_by_email')->nullable();
             $table->text('final_checked_by_remarks')->nullable();
+            $table->timestamp('final_created_by_date', $precision = 0)->nullable();
+            $table->text('final_created_by_email')->nullable();
+            $table->text('final_created_by_remarks')->nullable();
             $table->timestamp('approved_by_date', $precision = 0)->nullable();
             $table->text('approved_by_email')->nullable();
             $table->text('approved_by_remarks')->nullable();
             $table->timestamp('final_approved_by_date', $precision = 0)->nullable();
             $table->text('final_approved_by_email')->nullable();
             $table->text('final_approved_by_remarks')->nullable();
+            $table->timestamp('final_approved_2_by_date', $precision = 0)->nullable();
+            $table->text('final_approved_2_by_email')->nullable();
+            $table->text('final_approved_2_by_remarks')->nullable();
+            $table->timestamp('final_approved_3_by_date', $precision = 0)->nullable();
+            $table->text('final_approved_3_by_email')->nullable();
+            $table->text('final_approved_3_by_remarks')->nullable();
             $table->timestamp('rejected_by_date', $precision = 0)->nullable();
             $table->text('rejected_by_email')->nullable();
             $table->text('rejected_by_remarks')->nullable();
             $table->timestamp('final_rejected_by_date', $precision = 0)->nullable();
             $table->text('final_rejected_by_email')->nullable();
             $table->text('final_rejected_by_remarks')->nullable();
+            $table->timestamp('final_rejected_2_by_date', $precision = 0)->nullable();
+            $table->text('final_rejected_2_by_email')->nullable();
+            $table->text('final_rejected_2_by_remarks')->nullable();
+            $table->timestamp('final_rejected_3_by_date', $precision = 0)->nullable();
+            $table->text('final_rejected_3_by_email')->nullable();
+            $table->text('final_rejected_3_by_remarks')->nullable();
             $table->integer('categories_id')->unsigned()->nullable();
             $table->integer('unit_id')->unsigned()->nullable();
             $table->bigInteger('users_id')->unsigned()->nullable();
