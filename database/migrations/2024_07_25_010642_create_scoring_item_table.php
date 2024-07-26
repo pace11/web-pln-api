@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('scoring_item', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamp('period_date', $precision = 0)->nullable();
             $table->text('attachment')->nullable();
             $table->integer('realization')->default(0);
             $table->integer('value')->default(0);

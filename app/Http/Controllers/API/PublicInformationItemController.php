@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\ResponseController as ResponseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use App\Models\AccountInfluencer;
-use App\Models\AccountInfluencerItem;
+use App\Models\PublicInformation;
+use App\Models\PublicInformationItem;
 use Validator;
 use Carbon\Carbon;
 
-class AccountInfluencerItemController extends ResponseController
+class PublicInformationItemController extends ResponseController
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +19,7 @@ class AccountInfluencerItemController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $account = AccountInfluencerItem::with(['user', 'unit', 'account_influencer'])->orderBy('id', 'asc')->paginate(10);
+        $account = PublicInformationItem::with(['user', 'unit', 'public_information'])->orderBy('id', 'asc')->paginate(10);
 
         return $this->sendResponsePagination($account, "Fetch data success");
     }
@@ -32,16 +32,16 @@ class AccountInfluencerItemController extends ResponseController
     public function indexByParentId(Request $request, $id) {
         $user = Auth::guard('api')->user();
 
-        $filter = [['account_influencer_id','=',$id]];
+        $filter = [['public_information_id','=',$id]];
         
         if ($user->type == 'creator' && $user->placement == 'executor_unit') {
             $filter = [
-                ['account_influencer_id','=',$id],
+                ['public_information_id','=',$id],
                 ['unit_id','=',$user->unit_id]
             ];
         }
 
-        $account = AccountInfluencerItem::with(['user', 'unit', 'account_influencer'])->where($filter)->orderBy('id', 'asc')->paginate(10);
+        $account = PublicInformationItem::with(['user', 'unit', 'public_information'])->where($filter)->orderBy('id', 'asc')->paginate(10);
 
         return $this->sendResponsePagination($account, "Fetch data success");
     }
@@ -53,7 +53,7 @@ class AccountInfluencerItemController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function showById($id) {
-        $account = AccountInfluencerItem::with(['user', 'unit', 'account_influencer'])->where('id', $id)->first();
+        $account = PublicInformationItem::with(['user', 'unit', 'public_information'])->where('id', $id)->first();
         
         return $this->sendResponse($account, 'Fetch data success');
     }
@@ -65,7 +65,7 @@ class AccountInfluencerItemController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function showByParentId($id) {
-        $account = AccountInfluencerItem::with(['user', 'unit', 'account_influencer'])->where('account_influencer_id', $id)->first();
+        $account = PublicInformationItem::with(['user', 'unit', 'public_information'])->where('public_information_id', $id)->first();
         
         return $this->sendResponse($account, 'Fetch data success');
     }
@@ -80,24 +80,21 @@ class AccountInfluencerItemController extends ResponseController
         $user = Auth::guard('api')->user();
         $validator = Validator::make($request->all(), [
             'attachment' => 'required',
-            'account_influencer_id' => 'required' 
+            'public_information_id' => 'required' 
         ]);
 
         if($validator->fails()){
             return $this->sendError('Error validation', $validator->errors(), 400);       
         }
 
-        $parent = AccountInfluencer::whereId($request->all()['account_influencer_id'])->first();
-
         $input = $request->all();
-        $input['realization'] = count(json_decode($input['attachment'], true));
-        $input['value'] = $parent->target ? round(($input['realization']/$parent->target)*100) : 0;
+        $input['value'] = $input['attachment'] ? 100 : 0;
         $input['unit_id'] = $user->unit_id;
         $input['users_id'] = $user->id;
         $input['created_at'] = Carbon::now();
         $input['updated_at'] = Carbon::now();
         
-        $create = AccountInfluencerItem::create($input);
+        $create = PublicInformationItem::create($input);
 
         return $this->sendResponse($create, "Submit data success", 201);
     }
@@ -112,22 +109,19 @@ class AccountInfluencerItemController extends ResponseController
     public function updateById(Request $request, $id) {
         $validator = Validator::make($request->all(), [
             'attachment' => 'required',
-            'account_influencer_id' => 'required'
+            'public_information_id' => 'required'
         ]);
 
         if($validator->fails()){
             return $this->sendError('Error validation', $validator->errors(), 400);       
         }
 
-        $parent = AccountInfluencer::whereId($request->all()['account_influencer_id'])->first();
-
         $input = $request->all();
-        $input['realization'] = count(json_decode($input['attachment'], true));
-        $input['value'] = $parent->target ? round(($input['realization']/$parent->target)*100) : 0;
+        $input['value'] = $input['attachment'] ? 100 : 0;
         $input['updated_at'] = Carbon::now();
 
-        AccountInfluencerItem::whereId($id)->update($input);
-        $update = AccountInfluencerItem::whereId($id)->first();
+        PublicInformationItem::whereId($id)->update($input);
+        $update = PublicInformationItem::whereId($id)->first();
 
         return $this->sendResponse($input, "Update data success");
     }
@@ -139,7 +133,7 @@ class AccountInfluencerItemController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function deleteById($id) {
-        $account = AccountInfluencerItem::whereId($id)->delete();
+        $account = PublicInformationItem::whereId($id)->delete();
 
         if (!$account) {
             return $this->sendError('Not Found', false, 404);

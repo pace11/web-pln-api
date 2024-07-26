@@ -19,7 +19,29 @@ class ScoringItemController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $account = ScoringItem::with(['user', 'unit', 'scoring'])->orderBy('period_date', 'asc')->paginate(10);
+        $account = ScoringItem::with(['user', 'unit', 'scoring'])->orderBy('id', 'asc')->paginate(10);
+
+        return $this->sendResponsePagination($account, "Fetch data success");
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexByParentId(Request $request, $id) {
+        $user = Auth::guard('api')->user();
+
+        $filter = [['scoring_id','=',$id]];
+        
+        if ($user->type == 'creator' && $user->placement == 'executor_unit') {
+            $filter = [
+                ['scoring_id','=',$id],
+                ['unit_id','=',$user->unit_id]
+            ];
+        }
+
+        $account = ScoringItem::with(['user', 'unit', 'scoring'])->where($filter)->orderBy('id', 'asc')->paginate(10);
 
         return $this->sendResponsePagination($account, "Fetch data success");
     }
@@ -36,6 +58,18 @@ class ScoringItemController extends ResponseController
         if (!$account) {
             return $this->sendError('Not Found', false, 404);
         }
+        
+        return $this->sendResponse($account, 'Fetch data success');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showByParentId($id) {
+        $account = ScoringItem::with(['user', 'unit', 'scoring'])->where('scoring_id', $id)->first();
         
         return $this->sendResponse($account, 'Fetch data success');
     }
@@ -60,14 +94,27 @@ class ScoringItemController extends ResponseController
         $parent = Scoring::whereId($request->all()['scoring_id'])->first();
 
         $sum_realization = 0;
-        if (count(json_decode($request->all()['attachment'], true)) > 0) {
-            $sum_realization = array_reduce(json_decode($request->all()['attachment'], true), function($carry, $item) {
+        $obj_attachment = json_decode($request->all()['attachment'], true);
+
+        if (count($obj_attachment['cetak']) > 0) {
+            $sum_realization += array_reduce($obj_attachment['cetak'], function($carry, $item) {
+                return $carry + $item['value'];
+            });
+        }
+
+        if (count($obj_attachment['online']) > 0) {
+            $sum_realization += array_reduce($obj_attachment['online'], function($carry, $item) {
+                return $carry + $item['value'];
+            });
+        }
+
+        if (count($obj_attachment['tv']) > 0) {
+            $sum_realization += array_reduce($obj_attachment['tv'], function($carry, $item) {
                 return $carry + $item['value'];
             });
         }
 
         $input = $request->all();
-        $input['period_date'] = Carbon::now();
         $input['realization'] = $sum_realization;
         $input['value'] = $parent->target ? round(($sum_realization/$parent->target)*100) : 0;
         $input['unit_id'] = $user->unit_id;
@@ -100,8 +147,22 @@ class ScoringItemController extends ResponseController
         $parent = Scoring::whereId($request->all()['scoring_id'])->first();
 
         $sum_realization = 0;
-        if (count(json_decode($request->all()['attachment'], true)) > 0) {
-            $sum_realization = array_reduce(json_decode($request->all()['attachment'], true), function($carry, $item) {
+        $obj_attachment = json_decode($request->all()['attachment'], true);
+
+        if (count($obj_attachment['cetak']) > 0) {
+            $sum_realization += array_reduce($obj_attachment['cetak'], function($carry, $item) {
+                return $carry + $item['value'];
+            });
+        }
+
+        if (count($obj_attachment['online']) > 0) {
+            $sum_realization += array_reduce($obj_attachment['online'], function($carry, $item) {
+                return $carry + $item['value'];
+            });
+        }
+
+        if (count($obj_attachment['tv']) > 0) {
+            $sum_realization += array_reduce($obj_attachment['tv'], function($carry, $item) {
                 return $carry + $item['value'];
             });
         }

@@ -31,14 +31,14 @@ class PublicInformationItem extends Model
     public $timestamps = true;
 
     public function user() {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class, 'users_id', 'id');
     }
 
     public function unit() {
-        return $this->hasMany(Unit::class);
+        return $this->belongsTo(Unit::class, 'unit_id', 'id');
     }
 
     public function public_information() {
-        return $this->hasMany(PublicInformation::class);
+        return $this->belongsTo(PublicInformation::class, 'public_information_id', 'id');
     }
 }

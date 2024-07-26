@@ -25,6 +25,6 @@ class PublicInformation extends Model
     public $timestamps = true;
 
     public function user() {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class, 'users_id', 'id');
     }
 }

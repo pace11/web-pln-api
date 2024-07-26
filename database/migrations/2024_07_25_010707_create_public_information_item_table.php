@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('public_information_item', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamp('period_date', $precision = 0)->nullable();
             $table->text('attachment')->nullable();
             $table->integer('value')->default(0);
             $table->bigInteger('public_information_id')->unsigned()->nullable();

@@ -40,6 +40,6 @@ class InternalCommunicationItem extends Model
     }
 
     public function internal_communication() {
-        return $this->hasMany(InternalCommunication::class, 'internal_communication_id', 'id');
+        return $this->belongsTo(InternalCommunication::class, 'internal_communication_id', 'id');
     }
 }

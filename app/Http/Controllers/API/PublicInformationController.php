@@ -6,12 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\ResponseController as ResponseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use App\Models\AccountInfluencer;
-use App\Models\AccountInfluencerItem;
+use App\Models\PublicInformation;
+use App\Models\PublicInformationItem;
 use Validator;
 use Carbon\Carbon;
 
-class AccountInfluencerController extends ResponseController
+class PublicInformationController extends ResponseController
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +19,7 @@ class AccountInfluencerController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $account = AccountInfluencer::with(['user'])->orderBy('period_date', 'asc')->paginate(10);
+        $account = PublicInformation::with(['user'])->orderBy('period_date', 'asc')->paginate(10);
 
         return $this->sendResponsePagination($account, "Fetch data success");
     }
@@ -31,7 +31,7 @@ class AccountInfluencerController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function showById($id) {
-        $account = AccountInfluencer::with(['user'])->where('id', $id)->first();
+        $account = PublicInformation::with(['user'])->where('id', $id)->first();
 
         if (!$account) {
             return $this->sendError('Not Found', false, 404);
@@ -50,7 +50,6 @@ class AccountInfluencerController extends ResponseController
         $user = Auth::guard('api')->user();
         $validator = Validator::make($request->all(), [
             'period_date' => 'required',
-            'target' => ''
         ]);
 
         if($validator->fails()){
@@ -59,9 +58,8 @@ class AccountInfluencerController extends ResponseController
 
         // generate 12 month in 1 year
         for ($i = 1; $i <= 12; $i++) {
-            AccountInfluencer::create([
+            PublicInformation::create([
                 'period_date' => Carbon::parse($request->all()['period_date'].'-'.$i.'-1')->format('Y-m-d'),
-                'target' => $request->all()['target'],
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'users_id' => $user->id
@@ -80,28 +78,28 @@ class AccountInfluencerController extends ResponseController
      */
     public function updateById(Request $request, $id) {
         $validator = Validator::make($request->all(), [
-            'target' => '',
+            'target' => 'required',
         ]);
 
         if($validator->fails()){
             return $this->sendError('Error validation', $validator->errors(), 400);       
         }
 
-        $child = AccountInfluencerItem::where('account_influencer_id', $id)->get();
+        $child = PublicInformationItem::where('scoring_id', $id)->get();
 
         $input = $request->all();
         $input['updated_at'] = Carbon::now();
 
         if (count($child)) {
             foreach($child as $value) {
-                AccountInfluencerItem::whereId($value->id)->update([
+                PublicInformationItem::whereId($value->id)->update([
                     'value' => $input['target'] ? round(($value->realization/$input['target'])*100) : 0,
                 ]);
             }
         }
 
-        AccountInfluencer::whereId($id)->update($input);
-        $update = AccountInfluencer::where('id', $id)->first();
+        PublicInformation::whereId($id)->update($input);
+        $update = PublicInformation::where('id', $id)->first();
 
         return $this->sendResponse($update, "Update data success");
     }
@@ -113,7 +111,7 @@ class AccountInfluencerController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function deleteById($id) {
-        $account = AccountInfluencer::whereId($id)->delete();
+        $account = PublicInformation::whereId($id)->delete();
 
         if (!$account) {
             return $this->sendError('Not Found', false, 404);

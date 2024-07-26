@@ -19,7 +19,29 @@ class InternalCommunicationItemController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $account = InternalCommunicationItem::with(['user', 'unit', 'internal_communication'])->orderBy('period_date', 'asc')->paginate(10);
+        $account = InternalCommunicationItem::with(['user', 'unit', 'internal_communication'])->orderBy('id', 'asc')->paginate(10);
+
+        return $this->sendResponsePagination($account, "Fetch data success");
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexByParentId(Request $request, $id) {
+        $user = Auth::guard('api')->user();
+
+        $filter = [['internal_communication_id','=',$id]];
+        
+        if ($user->type == 'creator' && $user->placement == 'executor_unit') {
+            $filter = [
+                ['internal_communication_id','=',$id],
+                ['unit_id','=',$user->unit_id]
+            ];
+        }
+
+        $account = InternalCommunicationItem::with(['user', 'unit', 'internal_communication'])->where($filter)->orderBy('id', 'asc')->paginate(10);
 
         return $this->sendResponsePagination($account, "Fetch data success");
     }
@@ -32,10 +54,18 @@ class InternalCommunicationItemController extends ResponseController
      */
     public function showById($id) {
         $account = InternalCommunicationItem::with(['user', 'unit', 'internal_communication'])->where('id', $id)->first();
+        
+        return $this->sendResponse($account, 'Fetch data success');
+    }
 
-        if (!$account) {
-            return $this->sendError('Not Found', false, 404);
-        }
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showByParentId($id) {
+        $account = InternalCommunicationItem::with(['user', 'unit', 'internal_communication'])->where('internal_communication_id', $id)->first();
         
         return $this->sendResponse($account, 'Fetch data success');
     }
@@ -60,7 +90,6 @@ class InternalCommunicationItemController extends ResponseController
         $parent = InternalCommunication::whereId($request->all()['internal_communication_id'])->first();
 
         $input = $request->all();
-        $input['period_date'] = Carbon::now();
         $input['realization'] = count(json_decode($input['attachment'], true));
         $input['value'] = $parent->target ? round(($input['realization']/$parent->target)*100) : 0;
         $input['unit_id'] = $user->unit_id;

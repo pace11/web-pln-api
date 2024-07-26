@@ -17,6 +17,8 @@ use App\Http\Controllers\API\InternalCommunicationController;
 use App\Http\Controllers\API\InternalCommunicationItemController;
 use App\Http\Controllers\API\ScoringController;
 use App\Http\Controllers\API\ScoringItemController;
+use App\Http\Controllers\API\PublicInformationController;
+use App\Http\Controllers\API\PublicInformationItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -121,32 +123,34 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::post('link/restore/{id}', [ManageLinkController::class, 'restoreById']);
 
     // Account Influencer
-    Route::get('account-influencer', [AccountInfluencerController::class, 'index']);
-    Route::post('account-influencer', [AccountInfluencerController::class, 'create']);
-    Route::get('account-influencer/{id}', [AccountInfluencerController::class, 'showById']);
-    Route::patch('account-influencer/{id}', [AccountInfluencerController::class, 'updateById']);
-    Route::delete('account-influencer/{id}', [AccountInfluencerController::class, 'deleteById']);
+    Route::get('pengelolaan-akun-influencer', [AccountInfluencerController::class, 'index']);
+    Route::post('pengelolaan-akun-influencer', [AccountInfluencerController::class, 'create']);
+    Route::get('pengelolaan-akun-influencer/{id}', [AccountInfluencerController::class, 'showById']);
+    Route::patch('pengelolaan-akun-influencer/{id}', [AccountInfluencerController::class, 'updateById']);
+    Route::delete('pengelolaan-akun-influencer/{id}', [AccountInfluencerController::class, 'deleteById']);
 
     // Account Influencer Item
-    Route::get('account-influencer-item', [AccountInfluencerItemController::class, 'index']);
-    Route::post('account-influencer-item', [AccountInfluencerItemController::class, 'create']);
-    Route::get('account-influencer-item/{id}', [AccountInfluencerItemController::class, 'showById']);
-    Route::patch('account-influencer-item/{id}', [AccountInfluencerItemController::class, 'updateById']);
-    Route::delete('account-influencer-item/{id}', [AccountInfluencerItemController::class, 'deleteById']);
+    Route::get('pengelolaan-akun-influencer-item', [AccountInfluencerItemController::class, 'index']);
+    Route::post('pengelolaan-akun-influencer-item', [AccountInfluencerItemController::class, 'create']);
+    Route::get('pengelolaan-akun-influencer-item/{id}', [AccountInfluencerItemController::class, 'showById']);
+    Route::get('pengelolaan-akun-influencer-item/parent/{id}', [AccountInfluencerItemController::class, 'indexByParentId']);
+    Route::patch('pengelolaan-akun-influencer-item/{id}', [AccountInfluencerItemController::class, 'updateById']);
+    Route::delete('pengelolaan-akun-influencer-item/{id}', [AccountInfluencerItemController::class, 'deleteById']);
 
     // Internal Communication
-    Route::get('internal_communication', [InternalCommunicationController::class, 'index']);
-    Route::post('internal_communication', [InternalCommunicationController::class, 'create']);
-    Route::get('internal_communication/{id}', [InternalCommunicationController::class, 'showById']);
-    Route::patch('internal_communication/{id}', [InternalCommunicationController::class, 'updateById']);
-    Route::delete('internal_communication/{id}', [InternalCommunicationController::class, 'deleteById']);
+    Route::get('pengelolaan-komunikasi-internal', [InternalCommunicationController::class, 'index']);
+    Route::post('pengelolaan-komunikasi-internal', [InternalCommunicationController::class, 'create']);
+    Route::get('pengelolaan-komunikasi-internal/{id}', [InternalCommunicationController::class, 'showById']);
+    Route::patch('pengelolaan-komunikasi-internal/{id}', [InternalCommunicationController::class, 'updateById']);
+    Route::delete('pengelolaan-komunikasi-internal/{id}', [InternalCommunicationController::class, 'deleteById']);
 
     // Internal Communication Item
-    Route::get('internal_communication-item', [InternalCommunicationItemController::class, 'index']);
-    Route::post('internal_communication-item', [InternalCommunicationItemController::class, 'create']);
-    Route::get('internal_communication-item/{id}', [InternalCommunicationItemController::class, 'showById']);
-    Route::patch('internal_communication-item/{id}', [InternalCommunicationItemController::class, 'updateById']);
-    Route::delete('internal_communication-item/{id}', [InternalCommunicationItemController::class, 'deleteById']);
+    Route::get('pengelolaan-komunikasi-internal-item', [InternalCommunicationItemController::class, 'index']);
+    Route::post('pengelolaan-komunikasi-internal-item', [InternalCommunicationItemController::class, 'create']);
+    Route::get('pengelolaan-komunikasi-internal-item/{id}', [InternalCommunicationItemController::class, 'showById']);
+    Route::get('pengelolaan-komunikasi-internal-item/parent/{id}', [InternalCommunicationItemController::class, 'indexByParentId']);
+    Route::patch('pengelolaan-komunikasi-internal-item/{id}', [InternalCommunicationItemController::class, 'updateById']);
+    Route::delete('pengelolaan-komunikasi-internal-item/{id}', [InternalCommunicationItemController::class, 'deleteById']);
 
     // Scoring
     Route::get('scoring', [ScoringController::class, 'index']);
@@ -159,8 +163,24 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('scoring-item', [ScoringItemController::class, 'index']);
     Route::post('scoring-item', [ScoringItemController::class, 'create']);
     Route::get('scoring-item/{id}', [ScoringItemController::class, 'showById']);
+    Route::get('scoring-item/parent/{id}', [ScoringItemController::class, 'indexByParentId']);
     Route::patch('scoring-item/{id}', [ScoringItemController::class, 'updateById']);
     Route::delete('scoring-item/{id}', [ScoringItemController::class, 'deleteById']);
+
+    // Public Information
+    Route::get('pengelolaan-informasi-public', [PublicInformationController::class, 'index']);
+    Route::post('pengelolaan-informasi-public', [PublicInformationController::class, 'create']);
+    Route::get('pengelolaan-informasi-public/{id}', [PublicInformationController::class, 'showById']);
+    Route::patch('pengelolaan-informasi-public/{id}', [PublicInformationController::class, 'updateById']);
+    Route::delete('pengelolaan-informasi-public/{id}', [PublicInformationController::class, 'deleteById']);
+
+    // Public Information Item
+    Route::get('pengelolaan-informasi-public-item', [PublicInformationItemController::class, 'index']);
+    Route::post('pengelolaan-informasi-public-item', [PublicInformationItemController::class, 'create']);
+    Route::get('pengelolaan-informasi-public-item/{id}', [PublicInformationItemController::class, 'showById']);
+    Route::get('pengelolaan-informasi-public-item/parent/{id}', [PublicInformationItemController::class, 'indexByParentId']);
+    Route::patch('pengelolaan-informasi-public-item/{id}', [PublicInformationItemController::class, 'updateById']);
+    Route::delete('pengelolaan-informasi-public-item/{id}', [PublicInformationItemController::class, 'deleteById']);
 
     // Notifications
     Route::get('notifications', [NotificationsController::class, 'index']);
