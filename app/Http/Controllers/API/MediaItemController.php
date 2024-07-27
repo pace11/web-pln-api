@@ -101,7 +101,11 @@ class MediaItemController extends ResponseController
             return $this->sendError('Error validation', $validator->errors(), 400);       
         }
 
+        $has_images = count(json_decode($request->all()['attachment_images'], true)) > 0;
+        $has_videos = count(json_decode($request->all()['attachment_videos'], true)) > 0;
+
         $input = $request->all();
+        $input['value'] = $has_images || $has_videos ? 1 : 0;
         $input['users_id'] = $user->id;
         $input['unit_id'] = $user->unit_id ?? null;
         $input['created_at'] = Carbon::now();
@@ -122,16 +126,21 @@ class MediaItemController extends ResponseController
         $user = Auth::guard('api')->user();
         $validator = Validator::make($request->all(), [
             'title' => 'required',
-            'url' => 'required',
-            'caption' => 'required',
-            'target_post' => 'required',
+            'attachment_images' => '',
+            'attachment_videos' => '',
+            'caption' => '',
+            'media_id' => 'required'
         ]);
 
         if($validator->fails()){
             return $this->sendError('Error validation', $validator->errors(), 400);       
         }
 
+        $has_images = count(json_decode($request->all()['attachment_images'], true)) > 0;
+        $has_videos = count(json_decode($request->all()['attachment_videos'], true)) > 0;
+
         $input = $request->all();
+        $input['value'] = $has_images || $has_videos ? 1 : 0;
         $input['updated_at'] = Carbon::now();
         MediaItem::whereId($id)->update($input);
         $update = MediaItem::where('id', $id)->first();

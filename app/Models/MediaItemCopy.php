@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class MediaItem extends Model
+class MediaItemCopy extends Model
 {
     use HasFactory, SoftDeletes;
 
@@ -18,8 +18,35 @@ class MediaItem extends Model
         'title',
         'attachment_images',
         'attachment_videos',
+        'attachment_images_revision',
+        'attachment_videos_revision',
         'caption',
         'value',
+        'status',
+        'final_checked_by_date',
+        'final_checked_by_email',
+        'final_checked_by_remarks',
+        'final_created_by_date',
+        'final_created_by_email',
+        'final_created_by_remarks',
+        'final_approved_by_date',
+        'final_approved_by_email',
+        'final_approved_by_remarks',
+        'final_approved_2_by_date',
+        'final_approved_2_by_email',
+        'final_approved_2_by_remarks',
+        'final_approved_3_by_date',
+        'final_approved_3_by_email',
+        'final_approved_3_by_remarks',
+        'final_rejected_by_date',
+        'final_rejected_by_email',
+        'final_rejected_by_remarks',
+        'final_rejected_2_by_date',
+        'final_rejected_2_by_email',
+        'final_rejected_2_by_remarks',
+        'final_rejected_3_by_date',
+        'final_rejected_3_by_email',
+        'final_rejected_3_by_remarks',
         'media_id',
         'unit_id',
         'users_id',
@@ -32,6 +59,9 @@ class MediaItem extends Model
         'is_superadmin',
         'is_creator',
         'is_checker',
+        'is_approver',
+        'is_approver_2',
+        'is_approver_3',
     ];
     protected $dates = [
         'deleted_at'
@@ -78,4 +108,29 @@ class MediaItem extends Model
 
         return $is_checker ?? false;
     }
+
+    public function getIsApproverAttribute() {
+        $user = Auth::guard('api')->user();
+
+        if ($user->placement == 'main_office' && $user->type == 'approver') $is_approver = true;
+
+        return $is_approver ?? false;
+    }
+
+    public function getIsApprover2Attribute() {
+        $user = Auth::guard('api')->user();
+
+        if ($user->placement == 'main_office' && $user->type == 'approver_2') $is_approver_2 = true;
+
+        return $is_approver_2 ?? false;
+    }
+
+    public function getIsApprover3Attribute() {
+        $user = Auth::guard('api')->user();
+
+        if ($user->placement == 'main_office' && $user->type == 'approver_3') $is_approver_3 = true;
+
+        return $is_approver_3 ?? false;
+    }
+    
 }

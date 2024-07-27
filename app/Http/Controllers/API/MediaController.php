@@ -51,7 +51,7 @@ class MediaController extends ResponseController
         $found = Media::
                 whereMonth('period_date', Carbon::parse($request->all()['period_date'])->month)
                 ->whereYear('period_date', Carbon::parse($request->all()['period_date'])->year)
-                ->get();
+                ->first();
 
         if($validator->fails()){
             return $this->sendError('Error validation', $validator->errors(), 400);       
