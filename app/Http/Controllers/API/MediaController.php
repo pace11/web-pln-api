@@ -18,28 +18,9 @@ class MediaController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $user = Auth::guard('api')->user();
+        $account = Media::with(['user'])->orderBy('period_date', 'asc')->paginate(10);
 
-        if ($user->type == 'superadmin' || is_null($user->placement) || $user->placement == 'main_office') {
-            $filter = [];
-        } else {
-            $filter = [['unit_id', $user->unit_id]];
-        }
-        
-        $posts = Media::with(['user', 'unit'])->where($filter)->orderBy('updated_at', 'desc')->paginate(10);
-
-        return $this->sendResponsePagination($posts, "Fetch media success");
-    }
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function indexArchived(Request $request) {
-        $posts = Media::with(['categories', 'user'])->orderBy('deleted_at', 'desc')->onlyTrashed()->paginate(10);
-
-        return $this->sendResponsePagination($posts, "Fetch posts archived success");
+        return $this->sendResponsePagination($account, "Fetch data success");
     }
 
     /**
@@ -49,13 +30,9 @@ class MediaController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function showById($id) {
-        $media = Media::with(['user', 'unit'])->where('id', $id)->first();
-
-        if (!$media) {
-            return $this->sendError('Not Found', false, 404);
-        }
+        $account = Media::with(['user'])->where('id', $id)->first();
         
-        return $this->sendResponse($media, 'Fetch media success');
+        return $this->sendResponse($account, 'Fetch data success');
     }
 
     /**
@@ -67,24 +44,26 @@ class MediaController extends ResponseController
     public function create(Request $request) {
         $user = Auth::guard('api')->user();
         $validator = Validator::make($request->all(), [
-            'title' => 'required',
-            'url' => 'required',
-            'caption' => 'required',
-            'target_post' => 'required',
+            'period_date' => 'required',
+            'target' => '',
         ]);
 
         if($validator->fails()){
             return $this->sendError('Error validation', $validator->errors(), 400);       
         }
 
-        $input = $request->all();
-        $input['users_id'] = $user->id;
-        $input['unit_id'] = $user->unit_id ?? null;
-        $input['created_at'] = Carbon::now();
-        $input['updated_at'] = Carbon::now();
-        $media = Media::create($input);
+        // generate 12 month in 1 year
+        for ($i = 1; $i <= 12; $i++) {
+            Media::create([
+                'period_date' => Carbon::parse($request->all()['period_date'].'-'.$i.'-1')->format('Y-m-d'),
+                'target' => $request->all()['target'],
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+                'users_id' => $user->id
+            ]);
+        }
 
-        return $this->sendResponse($media, "Submit media success", 201);
+        return $this->sendResponse(null, "Submit data success", 201);
     }
 
     /**
@@ -95,12 +74,8 @@ class MediaController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function updateById(Request $request, $id) {
-        $user = Auth::guard('api')->user();
         $validator = Validator::make($request->all(), [
-            'title' => 'required',
-            'url' => 'required',
-            'caption' => 'required',
-            'target_post' => 'required',
+            'target' => '',
         ]);
 
         if($validator->fails()){
@@ -109,10 +84,11 @@ class MediaController extends ResponseController
 
         $input = $request->all();
         $input['updated_at'] = Carbon::now();
+
         Media::whereId($id)->update($input);
         $update = Media::where('id', $id)->first();
 
-        return $this->sendResponse($update, "Update media success");
+        return $this->sendResponse($update, "Update data success");
     }
 
     /**
@@ -122,96 +98,13 @@ class MediaController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function deleteById($id) {
-        $media = Media::whereId($id)->delete();
+        $account = Media::whereId($id)->delete();
 
-        if (!$media) {
+        if (!$account) {
             return $this->sendError('Not Found', false, 404);
         }
         
-        return $this->sendResponse(null, 'Delete media success');
-    }
-
-    /**
-     * Restore the specific deleted resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function restoreById($id) {
-        $media = Media::whereId($id)->withTrashed()->restore();
-
-        if (!$media) {
-            return $this->sendError('Not Found', false, 404);
-        }
-        
-        return $this->sendResponse(null, 'Restore media success');
-    }
-
-    /**
-     * Modified the specific resource.
-     *
-     * @param  request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function updateStatusById(Request $request, $id) {
-        $user = Auth::guard('api')->user();
-        $validator = Validator::make($request->all(), [
-            'status' => 'required',
-            'remarks' => '',
-        ]);
-
-        if($validator->fails()){
-            return $this->sendError('Error validation', $validator->errors(), 400);       
-        }
-
-        $placement = [
-            'main_office' => '(Kantor Induk)',
-            'executor_unit' => '(Unit Pelaksana)',
-            'superadmin' => '(Superadmin)'
-        ];
-
-        $payload = [
-            'checked' => [
-                'checked_by_date' => Carbon::now(),
-                'checked_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
-                'checked_by_remarks' => $request->all()['remarks']
-            ],
-            'final_checked' => [
-                'final_checked_by_date' => Carbon::now(),
-                'final_checked_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
-                'final_checked_by_remarks' => $request->all()['remarks']
-            ],
-            'approved' => [
-                'approved_by_date' => Carbon::now(),
-                'approved_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
-                'approved_by_remarks' => $request->all()['remarks'],
-            ],
-            'final_approved' => [
-                'final_approved_by_date' => Carbon::now(),
-                'final_approved_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
-                'final_approved_by_remarks' => $request->all()['remarks'],
-            ],
-            'rejected' => [
-                'rejected_by_date' => Carbon::now(),
-                'rejected_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
-                'rejected_by_remarks' => $request->all()['remarks']
-            ],
-            'final_rejected' => [
-                'final_rejected_by_date' => Carbon::now(),
-                'final_rejected_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
-                'final_rejected_by_remarks' => $request->all()['remarks']
-            ],
-        ];
-
-        $input = $payload[$request->all()['status']];
-        $input['updated_at'] = Carbon::now();
-        $input['status'] = $request->all()['status'];
-
-        Media::whereId($id)->update($input);
-        $update = Media::where('id', $id)->first();
-
-        return $this->sendResponse($update, "Update media success");
+        return $this->sendResponse(null, 'Delete data success');
     }
 
 }

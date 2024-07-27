@@ -50,6 +50,7 @@ class ScoringController extends ResponseController
         $user = Auth::guard('api')->user();
         $validator = Validator::make($request->all(), [
             'period_date' => 'required',
+            'target' => '',
         ]);
 
         if($validator->fails()){
@@ -60,6 +61,7 @@ class ScoringController extends ResponseController
         for ($i = 1; $i <= 12; $i++) {
             Scoring::create([
                 'period_date' => Carbon::parse($request->all()['period_date'].'-'.$i.'-1')->format('Y-m-d'),
+                'target' => $request->all()['target'],
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'users_id' => $user->id
@@ -78,7 +80,7 @@ class ScoringController extends ResponseController
      */
     public function updateById(Request $request, $id) {
         $validator = Validator::make($request->all(), [
-            'target' => 'required',
+            'target' => '',
         ]);
 
         if($validator->fails()){

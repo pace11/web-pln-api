@@ -78,7 +78,7 @@ class PublicInformationController extends ResponseController
      */
     public function updateById(Request $request, $id) {
         $validator = Validator::make($request->all(), [
-            'target' => 'required',
+            'target' => '',
         ]);
 
         if($validator->fails()){

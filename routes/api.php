@@ -10,6 +10,7 @@ use App\Http\Controllers\API\GrafikController;
 use App\Http\Controllers\API\NotificationsController;
 use App\Http\Controllers\API\UnitController;
 use App\Http\Controllers\API\MediaController;
+use App\Http\Controllers\API\MediaItemController;
 use App\Http\Controllers\API\ManageLinkController;
 use App\Http\Controllers\API\AccountInfluencerController;
 use App\Http\Controllers\API\AccountInfluencerItemController;
@@ -91,6 +92,14 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::patch('media/{id}', [MediaController::class, 'updateById']);
     Route::patch('media/status/{id}', [MediaController::class, 'updateStatusById']);
     Route::delete('media/{id}', [MediaController::class, 'deleteById']);
+
+    // Media Item
+    Route::get('media-item', [MediaItemController::class, 'index']);
+    Route::post('media-item', [MediaItemController::class, 'create']);
+    Route::get('media-item/{id}', [MediaItemController::class, 'showById']);
+    Route::get('media-item/parent/{id}', [MediaItemController::class, 'indexByParentId']);
+    Route::patch('media-item/{id}', [MediaItemController::class, 'updateById']);
+    Route::delete('media-item/{id}', [MediaItemController::class, 'deleteById']);
 
     // Categories
     Route::get('categories', [CategoriesController::class, 'index']);
