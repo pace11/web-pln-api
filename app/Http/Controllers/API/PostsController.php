@@ -99,6 +99,17 @@ class PostsController extends ResponseController
      *
      * @return \Illuminate\Http\Response
      */
+    public function indexRelease() {
+        $posts = Posts::whereNotNull('number_release')->orderBy('updated_at', 'desc')->get();
+
+        return $this->sendResponse($posts, "Fetch data success");
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function indexArchived(Request $request) {
         $posts = Posts::with(['categories', 'user'])->orderBy('deleted_at', 'desc')->onlyTrashed()->paginate(10);
 
@@ -326,19 +337,20 @@ class PostsController extends ResponseController
                 'final_approved_by_date' => Carbon::now(),
                 'final_approved_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'final_approved_by_remarks' => $request->all()['remarks'],
-                'posted' => $request->all()['posted']
+                // 'posted' => $request->all()['posted']
             ],
             'final_approved_2' => [
                 'final_approved_2_by_date' => Carbon::now(),
                 'final_approved_2_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'final_approved_2_by_remarks' => $request->all()['remarks'],
-                'posted' => $request->all()['posted']
+                // 'posted' => $request->all()['posted']
             ],
             'final_approved_3' => [
                 'final_approved_3_by_date' => Carbon::now(),
                 'final_approved_3_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'final_approved_3_by_remarks' => $request->all()['remarks'],
-                'posted' => $request->all()['posted']
+                'number_release' => $this->generateNumberRelease(Carbon::now())
+                // 'posted' => $request->all()['posted']
             ],
             'rejected' => [
                 'rejected_by_date' => Carbon::now(),
@@ -407,6 +419,19 @@ class PostsController extends ResponseController
         $new = $detail->replicate()->save();
 
         return $this->sendResponse($new, "Recreate posts success", 201);
+    }
+
+    public function generateNumberRelease($date) {
+        $month = Carbon::parse($date)->month;
+        $year = Carbon::parse($date)->year;
+
+        $romawi = array('','I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII');
+
+        $get = Posts::whereNotNull('number_release')->whereMonth('created_at', $month)->whereYear('created_at', $year)->get();
+        $count = $get->count() + 1;
+        $number_release = str_pad($count, 3, '0', STR_PAD_LEFT).'.KOMSTH/STH.00.01/'.$romawi[$month].'/'.$year;
+
+        return $number_release;
     }
 
 }

@@ -7,20 +7,21 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
-class PublicInformationItem extends Model
+class NewsItem extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'public_information_item';
+    protected $table = 'news_item';
     protected $primaryKey = 'id';
     protected $fillable = [
         'id',
         'period_date',
         'attachment',
+        'realization',
         'value',
-        'public_information_id',
+        'news_id',
         'unit_id',
-        'users_id'
+        'users_id',
     ];
     protected $guard = [
         'created_at', 'updated_at'
@@ -43,8 +44,8 @@ class PublicInformationItem extends Model
         return $this->belongsTo(Unit::class, 'unit_id', 'id');
     }
 
-    public function public_information() {
-        return $this->belongsTo(PublicInformation::class, 'public_information_id', 'id');
+    public function news() {
+        return $this->belongsTo(News::class, 'news_id', 'id');
     }
 
     public function getIsOwnPostAttribute() {

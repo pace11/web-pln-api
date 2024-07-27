@@ -20,6 +20,8 @@ use App\Http\Controllers\API\ScoringController;
 use App\Http\Controllers\API\ScoringItemController;
 use App\Http\Controllers\API\PublicInformationController;
 use App\Http\Controllers\API\PublicInformationItemController;
+use App\Http\Controllers\API\NewsController;
+use App\Http\Controllers\API\NewsItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -82,6 +84,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::patch('post/status/{id}', [PostsController::class, 'updateStatusById']);
     Route::post('post/recreate/{id}', [PostsController::class, 'updateReplicateById']);
     Route::delete('post/{id}', [PostsController::class, 'deleteById']);
+    Route::get('posts/release', [PostsController::class, 'indexRelease']);
 
     // Media
     Route::get('media', [MediaController::class, 'index']);
@@ -190,6 +193,21 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('pengelolaan-informasi-public-item/parent/{id}', [PublicInformationItemController::class, 'indexByParentId']);
     Route::patch('pengelolaan-informasi-public-item/{id}', [PublicInformationItemController::class, 'updateById']);
     Route::delete('pengelolaan-informasi-public-item/{id}', [PublicInformationItemController::class, 'deleteById']);
+
+    // News
+    Route::get('berita', [NewsController::class, 'index']);
+    Route::post('berita', [NewsController::class, 'create']);
+    Route::get('berita/{id}', [NewsController::class, 'showById']);
+    Route::patch('berita/{id}', [NewsController::class, 'updateById']);
+    Route::delete('berita/{id}', [NewsController::class, 'deleteById']);
+
+    // News Item
+    Route::get('berita-item', [NewsItemController::class, 'index']);
+    Route::post('berita-item', [NewsItemController::class, 'create']);
+    Route::get('berita-item/{id}', [NewsItemController::class, 'showById']);
+    Route::get('berita-item/parent/{id}', [NewsItemController::class, 'indexByParentId']);
+    Route::patch('berita-item/{id}', [NewsItemController::class, 'updateById']);
+    Route::delete('berita-item/{id}', [NewsItemController::class, 'deleteById']);
 
     // Notifications
     Route::get('notifications', [NotificationsController::class, 'index']);

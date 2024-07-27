@@ -53,8 +53,17 @@ class InternalCommunicationController extends ResponseController
             'target' => '',
         ]);
 
+        $found = InternalCommunication::
+                whereMonth('period_date', Carbon::parse($request->all()['period_date'])->month)
+                ->whereYear('period_date', Carbon::parse($request->all()['period_date'])->year)
+                ->get();
+
         if($validator->fails()){
             return $this->sendError('Error validation', $validator->errors(), 400);       
+        }
+
+        if ($found) {
+            return $this->sendError('Error duplicate resource', 'Please try again with different resource', 409);
         }
 
         // generate 12 month in 1 year

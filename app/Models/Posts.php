@@ -19,6 +19,7 @@ class Posts extends Model
         'title',
         'description',
         'thumbnail',
+        'number_release',
         'posted',
         'banner',
         'status',

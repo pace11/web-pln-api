@@ -19,6 +19,7 @@ return new class extends Migration
             $table->text('title')->nullable();
             $table->text('description')->nullable();
             $table->text('thumbnail')->nullable();
+            $table->text('number_release')->nullable();
             $table->boolean('posted')->nullable();
             $table->boolean('banner')->nullable();
             $table->boolean('recreated')->nullable();
