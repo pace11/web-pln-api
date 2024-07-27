@@ -100,7 +100,14 @@ class PostsController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function indexRelease() {
-        $posts = Posts::whereNotNull('number_release')->orderBy('updated_at', 'desc')->get();
+        $user = Auth::guard('api')->user();
+        $filter = [];
+
+        if ($user->type == 'creator' && $user->placement == 'executor_unit') {
+            $filter = [['unit_id', '=', $user->unit_id]];
+        }
+
+        $posts = Posts::where($filter)->whereNotNull('number_release')->orderBy('updated_at', 'desc')->get();
 
         return $this->sendResponse($posts, "Fetch data success");
     }
