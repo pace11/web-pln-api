@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\CustomHelpers;
 
 class NewsItem extends Model
 {
@@ -29,6 +30,7 @@ class NewsItem extends Model
     protected $appends = [
         'is_own_post',
         'is_creator',
+        'is_done_date',
     ];
     protected $dates = [
         'deleted_at'
@@ -60,5 +62,12 @@ class NewsItem extends Model
         if ($user->placement == 'main_office' && $user->type == 'creator') $is_creator = true;
 
         return $is_creator ?? false;
+    }
+
+    public function getIsDoneDateAttribute() {
+        $status = array('prev', 'next');
+
+        if (in_array(CustomHelpers::isPreviousDate($this->news->period_date), $status)) return true;
+        return false;
     }
 }

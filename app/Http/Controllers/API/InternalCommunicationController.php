@@ -19,7 +19,9 @@ class InternalCommunicationController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $account = InternalCommunication::with(['user'])->orderBy('period_date', 'asc')->paginate(10);
+        $year = $request->query('posted') ?? Carbon::now()->year;
+
+        $account = InternalCommunication::with(['user'])->whereYear('period_date', $year)->orderBy('period_date', 'asc')->paginate(10);
 
         return $this->sendResponsePagination($account, "Fetch data success");
     }
@@ -54,8 +56,7 @@ class InternalCommunicationController extends ResponseController
         ]);
 
         $found = InternalCommunication::
-                whereMonth('period_date', Carbon::parse($request->all()['period_date'])->month)
-                ->whereYear('period_date', Carbon::parse($request->all()['period_date'])->year)
+                whereYear('period_date', $request->all()['period_date'])
                 ->first();
 
         if($validator->fails()){

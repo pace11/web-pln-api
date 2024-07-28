@@ -60,6 +60,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('grafik/counts', [GrafikController::class, 'index']);
     Route::get('grafik/posts', [GrafikController::class, 'indexPostStatusByUnit']);
     Route::get('grafik/unit', [GrafikController::class, 'indexUserTypeByUnit']);
+    Route::get('grafik/unit/indicators', [GrafikController::class, 'unitWithIndicators']);
 
     // logout / detail user
     Route::post('logout', [UserController::class, 'logout']);

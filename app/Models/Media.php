@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
+use App\Helpers\CustomHelpers;
 
 class Media extends Model
 {
@@ -18,6 +19,9 @@ class Media extends Model
     protected $guard = [
         'created_at', 'updated_at'
     ];
+    protected $appends = [
+        'date_status',
+    ];
     protected $dates = [
         'deleted_at'
     ];
@@ -26,5 +30,9 @@ class Media extends Model
 
     public function user() {
         return $this->belongsTo(User::class, 'users_id', 'id');
+    }
+
+    public function getDateStatusAttribute() {
+        return CustomHelpers::isPreviousDate($this->period_date);
     }
 }

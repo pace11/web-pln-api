@@ -19,7 +19,9 @@ class AccountInfluencerController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $account = AccountInfluencer::with(['user'])->orderBy('period_date', 'asc')->paginate(10);
+        $year = $request->query('posted') ?? Carbon::now()->year;
+
+        $account = AccountInfluencer::with(['user'])->whereYear('period_date', $year)->orderBy('period_date', 'asc')->paginate(10);
 
         return $this->sendResponsePagination($account, "Fetch data success");
     }
@@ -54,8 +56,7 @@ class AccountInfluencerController extends ResponseController
         ]);
 
         $found = AccountInfluencer::
-                whereMonth('period_date', Carbon::parse($request->all()['period_date'])->month)
-                ->whereYear('period_date', Carbon::parse($request->all()['period_date'])->year)
+                whereYear('period_date', $request->all()['period_date'])
                 ->first();
 
         if($validator->fails()){

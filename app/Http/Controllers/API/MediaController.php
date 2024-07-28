@@ -18,7 +18,9 @@ class MediaController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $account = Media::with(['user'])->orderBy('period_date', 'asc')->paginate(10);
+        $year = $request->query('posted') ?? Carbon::now()->year;
+
+        $account = Media::with(['user'])->whereYear('period_date', $year)->orderBy('period_date', 'asc')->paginate(10);
 
         return $this->sendResponsePagination($account, "Fetch data success");
     }
@@ -49,8 +51,7 @@ class MediaController extends ResponseController
         ]);
 
         $found = Media::
-                whereMonth('period_date', Carbon::parse($request->all()['period_date'])->month)
-                ->whereYear('period_date', Carbon::parse($request->all()['period_date'])->year)
+                whereYear('period_date', $request->all()['period_date'])
                 ->first();
 
         if($validator->fails()){
@@ -72,7 +73,7 @@ class MediaController extends ResponseController
             ]);
         }
 
-        return $this->sendResponse(null, "Submit data success", 201);
+        return $this->sendResponse($found, "Submit data success", 201);
     }
 
     /**

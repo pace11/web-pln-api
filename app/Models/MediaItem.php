@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\CustomHelpers;
 
 class MediaItem extends Model
 {
@@ -32,6 +33,7 @@ class MediaItem extends Model
         'is_superadmin',
         'is_creator',
         'is_checker',
+        'is_done_date',
     ];
     protected $dates = [
         'deleted_at'
@@ -77,5 +79,12 @@ class MediaItem extends Model
         if ($user->placement == 'main_office' && $user->type == 'checker') $is_checker = true;
 
         return $is_checker ?? false;
+    }
+
+    public function getIsDoneDateAttribute() {
+        $status = array('prev', 'next');
+
+        if (in_array(CustomHelpers::isPreviousDate($this->media->period_date), $status)) return true;
+        return false;
     }
 }
