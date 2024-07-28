@@ -99,6 +99,17 @@ class PostsController extends ResponseController
      *
      * @return \Illuminate\Http\Response
      */
+    public function indexDownloadById($id) {
+        $posts = Posts::with(['categories', 'user', 'unit'])->whereId($id)->get();
+
+        return $this->sendResponse($posts, "Download posts success");
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function indexRelease() {
         $user = Auth::guard('api')->user();
         $filter = [];
@@ -170,7 +181,10 @@ class PostsController extends ResponseController
                 ->whereHas('categories', function($q) use($tag) {
                     $q->where('slug', '=', $tag);
                 })
-                ->where('slug', '!=', $slug)
+                ->where([
+                    ['slug', '!=', $slug],
+                    ['posted', '=', true]
+                ])
                 ->inRandomOrder()
                 ->limit($limit)
                 ->get();
@@ -356,8 +370,8 @@ class PostsController extends ResponseController
                 'final_approved_3_by_date' => Carbon::now(),
                 'final_approved_3_by_email' => $user->email." ".$placement[$user->placement ?? 'superadmin'],
                 'final_approved_3_by_remarks' => $request->all()['remarks'],
-                'number_release' => $this->generateNumberRelease(Carbon::now())
-                // 'posted' => $request->all()['posted']
+                'number_release' => $this->generateNumberRelease(Carbon::now()),
+                'posted' => $request->all()['posted']
             ],
             'rejected' => [
                 'rejected_by_date' => Carbon::now(),

@@ -75,6 +75,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     // Posts
     Route::get('posts', [PostsController::class, 'index']);
     Route::get('posts/download', [PostsController::class, 'indexDownload']);
+    Route::get('posts/download/{id}', [PostsController::class, 'indexDownloadById']);
     Route::get('posts/archived', [PostsController::class, 'indexArchived']);
     Route::post('post', [PostsController::class, 'create']);
     Route::post('post/restore/{id}', [PostsController::class, 'restoreById']);
