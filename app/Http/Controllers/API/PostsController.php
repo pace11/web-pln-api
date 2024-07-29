@@ -225,7 +225,7 @@ class PostsController extends ResponseController
         $input['created_at'] = Carbon::now();
         $input['updated_at'] = Carbon::now();
 
-        if (is_null($user->placement) || $user->placement == 'main_office') $input['status'] = 'final_created';
+        if (is_null($user->placement) || $user->placement == 'main_office') $input['status'] = 'final_approved_3';
 
         $posts = Posts::create($input);
         $detail_posts = Posts::where('id', $posts->id)->first();
@@ -236,7 +236,7 @@ class PostsController extends ResponseController
                 'posts_id' => $detail_posts->id,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
-                'status' => is_null($user->placement) || $user->placement == 'main_office' ? 'final_created' : 'created'
+                'status' => is_null($user->placement) || $user->placement == 'main_office' ? 'final_approved_3' : 'created'
             ]);
         }
 

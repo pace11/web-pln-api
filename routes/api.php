@@ -22,6 +22,7 @@ use App\Http\Controllers\API\PublicInformationController;
 use App\Http\Controllers\API\PublicInformationItemController;
 use App\Http\Controllers\API\NewsController;
 use App\Http\Controllers\API\NewsItemController;
+use App\Http\Controllers\API\ConfigMediaScoringController;
 
 /*
 |--------------------------------------------------------------------------
@@ -210,6 +211,13 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('berita-item/parent/{id}', [NewsItemController::class, 'indexByParentId']);
     Route::patch('berita-item/{id}', [NewsItemController::class, 'updateById']);
     Route::delete('berita-item/{id}', [NewsItemController::class, 'deleteById']);
+
+    // Config Media Scoring
+    Route::get('config/media-scoring', [ConfigMediaScoringController::class, 'index']);
+    Route::post('config/media-scoring', [ConfigMediaScoringController::class, 'create']);
+    Route::get('config/media-scoring/{id}', [ConfigMediaScoringController::class, 'showById']);
+    Route::patch('config/media-scoring/{id}', [ConfigMediaScoringController::class, 'updateById']);
+    Route::delete('config/media-scoring/{id}', [ConfigMediaScoringController::class, 'deleteById']);
 
     // Notifications
     Route::get('notifications', [NotificationsController::class, 'index']);
