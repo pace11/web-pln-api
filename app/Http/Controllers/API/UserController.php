@@ -91,6 +91,37 @@ class UserController extends ResponseController
         return $this->sendResponse($update, "Update user success");
     }
 
+    public function updateProfileById(Request $request, $id) {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+        ]);
+        $input = $request->all();
+
+        if($validator->fails()){
+            return $this->sendError('Error validation', $validator->errors(), 400);       
+        }
+
+        if (array_key_exists('email', $request->all())) {
+            $found_user = User::where('email', $request->all()['email'])->first();
+            
+            if ($found_user) {
+                return $this->sendError('The email address you specified is already in use', false, 409);
+            }
+
+            $input['email'] = $request->all()['email'];
+        }
+
+        if (array_key_exists('password', $request->all())) {
+            $input['password'] = bcrypt($request->all()['password']);
+        }
+
+        $input['updated_at'] = Carbon::now();
+        User::whereId($id)->update($input);
+        $update = User::whereId($id)->first();
+
+        return $this->sendResponse($update, "Update profile success");
+    }
+
     public function login(Request $request) {
         if(Auth::attempt(['email' => $request->email, 'password' => $request->password])){ 
             $user = Auth::user(); 

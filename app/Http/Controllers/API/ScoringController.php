@@ -19,11 +19,22 @@ class ScoringController extends ResponseController
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request) {
-        $year = $request->query('posted') ?? Carbon::now()->year;
+        $year = $request->query('year') ?? Carbon::now()->year;
 
         $account = Scoring::with(['user'])->whereYear('period_date', $year)->orderBy('period_date', 'asc')->paginate(10);
 
         return $this->sendResponsePagination($account, "Fetch data success");
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexYear(Request $request) {
+        $year = Scoring::select(\DB::raw('YEAR(period_date) as year'))->groupBy('year')->get();
+
+        return $this->sendResponse($year, "Fetch data success");
     }
 
     /**

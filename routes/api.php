@@ -69,6 +69,7 @@ Route::group(['middleware' => 'auth:api'], function() {
     Route::get('users', [UserController::class, 'index']);
     Route::get('user/{id}', [UserController::class, 'showById']);
     Route::patch('user/{id}',  [UserController::class, 'updateById']);
+    Route::patch('user/profile/{id}',  [UserController::class, 'updateProfileById']);
     Route::delete('user/{id}', [UserController::class, 'deleteById']);
     Route::post('user/restore/{id}', [UserController::class, 'restoreById']);
     Route::post('update-password', [UserController::class, 'updatePassword']);
@@ -169,6 +170,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     // Scoring
     Route::get('scoring', [ScoringController::class, 'index']);
+    Route::get('scoring/year', [ScoringController::class, 'indexYear']);
     Route::post('scoring', [ScoringController::class, 'create']);
     Route::get('scoring/{id}', [ScoringController::class, 'showById']);
     Route::patch('scoring/{id}', [ScoringController::class, 'updateById']);
