@@ -16,8 +16,8 @@ class PublicInformationItem extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'id',
-        'period_date',
         'attachment',
+        'realization',
         'value',
         'public_information_id',
         'unit_id',

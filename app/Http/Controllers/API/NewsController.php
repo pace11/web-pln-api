@@ -27,6 +27,17 @@ class NewsController extends ResponseController
     }
 
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexYear(Request $request) {
+        $year = News::select(\DB::raw('YEAR(period_date) as year'))->groupBy('year')->get();
+
+        return $this->sendResponse($year, "Fetch data success");
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id

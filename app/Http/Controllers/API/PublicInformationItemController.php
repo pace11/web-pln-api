@@ -88,6 +88,7 @@ class PublicInformationItemController extends ResponseController
         }
 
         $input = $request->all();
+        $input['realization'] = $input['attachment'] ? 1 : 0;
         $input['value'] = $input['attachment'] ? 100 : 0;
         $input['unit_id'] = $user->unit_id;
         $input['users_id'] = $user->id;
@@ -117,6 +118,7 @@ class PublicInformationItemController extends ResponseController
         }
 
         $input = $request->all();
+        $input['realization'] = $input['attachment'] ? 1 : 0;
         $input['value'] = $input['attachment'] ? 100 : 0;
         $input['updated_at'] = Carbon::now();
 

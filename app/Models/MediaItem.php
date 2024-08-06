@@ -16,10 +16,8 @@ class MediaItem extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'id',
-        'title',
-        'attachment_images',
-        'attachment_videos',
-        'caption',
+        'attachment',
+        'realization',
         'value',
         'media_id',
         'unit_id',

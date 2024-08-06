@@ -88,8 +88,7 @@ class NewsItemController extends ResponseController
         }
 
         $parent = News::whereId($request->all()['news_id'])->first();
-
-        $count = count(json_decode($request->all()['attachment'], true));
+        $count = count(json_decode($request->all()['attachment'], true)['berita']);
 
         $input = $request->all();
         $input['realization'] = $count;
@@ -122,8 +121,7 @@ class NewsItemController extends ResponseController
         }
 
         $parent = News::whereId($request->all()['news_id'])->first();
-
-        $count = count(json_decode($request->all()['attachment'], true));
+        $count = count(json_decode($request->all()['attachment'], true)['berita']);
 
         $input = $request->all();
         $input['realization'] = $count;

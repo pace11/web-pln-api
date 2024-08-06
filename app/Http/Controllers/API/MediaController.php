@@ -7,6 +7,7 @@ use App\Http\Controllers\API\ResponseController as ResponseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use App\Models\Media;
+use App\Models\MediaItem;
 use Validator;
 use Carbon\Carbon;
 
@@ -23,6 +24,17 @@ class MediaController extends ResponseController
         $account = Media::with(['user'])->whereYear('period_date', $year)->orderBy('period_date', 'asc')->paginate(10);
 
         return $this->sendResponsePagination($account, "Fetch data success");
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function indexYear(Request $request) {
+        $year = Media::select(\DB::raw('YEAR(period_date) as year'))->groupBy('year')->get();
+
+        return $this->sendResponse($year, "Fetch data success");
     }
 
     /**
@@ -92,8 +104,18 @@ class MediaController extends ResponseController
             return $this->sendError('Error validation', $validator->errors(), 400);       
         }
 
+        $child = MediaItem::where('media_id', $id)->get();
+
         $input = $request->all();
         $input['updated_at'] = Carbon::now();
+
+        if (count($child)) {
+            foreach($child as $value) {
+                MediaItem::whereId($value->id)->update([
+                    'value' => $input['target'] ? round(($value->realization/$input['target'])*100) : 0,
+                ]);
+            }
+        }
 
         Media::whereId($id)->update($input);
         $update = Media::where('id', $id)->first();

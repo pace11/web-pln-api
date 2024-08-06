@@ -70,6 +70,7 @@ class PublicInformationController extends ResponseController
         for ($i = 1; $i <= 12; $i++) {
             PublicInformation::create([
                 'period_date' => Carbon::parse($request->all()['period_date'].'-'.$i.'-1')->format('Y-m-d'),
+                'target' => 1,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now(),
                 'users_id' => $user->id

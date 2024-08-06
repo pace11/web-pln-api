@@ -16,7 +16,6 @@ class NewsItem extends Model
     protected $primaryKey = 'id';
     protected $fillable = [
         'id',
-        'period_date',
         'attachment',
         'realization',
         'value',

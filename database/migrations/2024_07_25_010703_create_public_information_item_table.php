@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('public_information_item', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->text('attachment')->nullable();
+            $table->integer('realization')->default(0);
             $table->integer('value')->default(0);
             $table->bigInteger('public_information_id')->unsigned()->nullable();
             $table->integer('unit_id')->unsigned()->nullable();

@@ -14,7 +14,7 @@ class PublicInformation extends Model
     protected $table = 'public_information';
     protected $primaryKey = 'id';
     protected $fillable = [
-        'id', 'period_date', 'users_id'
+        'id', 'period_date', 'target', 'users_id'
     ];
     protected $guard = [
         'created_at', 'updated_at'

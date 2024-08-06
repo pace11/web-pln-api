@@ -15,10 +15,8 @@ return new class extends Migration
     {
         Schema::create('media_item', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('title')->nullable();
-            $table->text('attachment_images')->nullable();
-            $table->text('attachment_videos')->nullable();
-            $table->text('caption')->nullable();
+            $table->text('attachment')->nullable();
+            $table->integer('realization')->default(0);
             $table->integer('value')->default(0);
             $table->bigInteger('media_id')->unsigned()->nullable();
             $table->integer('unit_id')->unsigned()->nullable();

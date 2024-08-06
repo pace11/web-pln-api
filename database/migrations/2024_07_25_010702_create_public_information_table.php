@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('public_information', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamp('period_date', $precision = 0)->nullable();
+            $table->integer('target')->default(0);
             $table->bigInteger('users_id')->unsigned()->nullable();
             $table->softDeletes($column = 'deleted_at', $precision = 0);
             $table->timestamps();

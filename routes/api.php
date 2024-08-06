@@ -140,6 +140,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     // Account Influencer
     Route::get('pengelolaan-akun-influencer', [AccountInfluencerController::class, 'index']);
+    Route::get('pengelolaan-akun-influencer/year', [AccountInfluencerController::class, 'indexYear']);
     Route::post('pengelolaan-akun-influencer', [AccountInfluencerController::class, 'create']);
     Route::get('pengelolaan-akun-influencer/{id}', [AccountInfluencerController::class, 'showById']);
     Route::patch('pengelolaan-akun-influencer/{id}', [AccountInfluencerController::class, 'updateById']);
@@ -155,6 +156,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     // Internal Communication
     Route::get('pengelolaan-komunikasi-internal', [InternalCommunicationController::class, 'index']);
+    Route::get('pengelolaan-komunikasi-internal/year', [InternalCommunicationController::class, 'indexYear']);
     Route::post('pengelolaan-komunikasi-internal', [InternalCommunicationController::class, 'create']);
     Route::get('pengelolaan-komunikasi-internal/{id}', [InternalCommunicationController::class, 'showById']);
     Route::patch('pengelolaan-komunikasi-internal/{id}', [InternalCommunicationController::class, 'updateById']);
@@ -186,6 +188,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     // Public Information
     Route::get('pengelolaan-informasi-public', [PublicInformationController::class, 'index']);
+    Route::get('pengelolaan-informasi-public/year', [PublicInformationController::class, 'indexYear']);
     Route::post('pengelolaan-informasi-public', [PublicInformationController::class, 'create']);
     Route::get('pengelolaan-informasi-public/{id}', [PublicInformationController::class, 'showById']);
     Route::patch('pengelolaan-informasi-public/{id}', [PublicInformationController::class, 'updateById']);
@@ -201,6 +204,7 @@ Route::group(['middleware' => 'auth:api'], function() {
 
     // News
     Route::get('berita', [NewsController::class, 'index']);
+    Route::get('berita/year', [NewsController::class, 'indexYear']);
     Route::post('berita', [NewsController::class, 'create']);
     Route::get('berita/{id}', [NewsController::class, 'showById']);
     Route::patch('berita/{id}', [NewsController::class, 'updateById']);
